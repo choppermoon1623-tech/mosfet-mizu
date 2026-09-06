@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>水でわかる MOSFET ｜ 水と電気のサイエンス</title>
+<style>
+  :root{
+    --cream:#FCF7EF; --card:#ffffff; --ink:#26313D; --sub:#5C6B7A;
+    --blue:#1E7FCB; --blue-d:#125E9B; --blue-l:#DCEDFB;
+    --orange:#E5942B; --orange-l:#FCEBD2;
+    --line:#E6DED2; --green:#2E9E6B; --pink:#E0607E;
+    --shadow:0 6px 20px rgba(60,45,20,.08);
+    --r:18px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--cream); color:var(--ink);
+    font-family:"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",system-ui,sans-serif;
+    line-height:1.75; -webkit-text-size-adjust:100%;
+  }
+  .wrap{max-width:1040px; margin:0 auto; padding:0 18px}
+
+  /* ---------- ヒーロー ---------- */
+  .hero{padding:38px 0 14px; text-align:center}
+  .eyebrow{
+    display:inline-block; background:var(--blue-l); color:var(--blue-d);
+    font-size:13px; font-weight:700; letter-spacing:.08em;
+    padding:5px 14px; border-radius:999px;
+  }
+  h1{ font-size:clamp(27px,5.4vw,42px); line-height:1.35; margin:14px 0 8px; }
+  h1 .accent{color:var(--blue)}
+  .lead{color:var(--sub); font-size:clamp(15px,2.4vw,17px); margin:0 auto; max-width:660px}
+  .hero-note{
+    margin-top:18px; display:inline-flex; gap:8px; align-items:center;
+    background:#fff; border:1px solid var(--line); border-radius:999px;
+    padding:8px 18px; font-size:14px; box-shadow:var(--shadow);
+  }
+  .hero-note b{color:var(--orange)}
+
+  /* ---------- セクション共通 ---------- */
+  section{margin:44px 0}
+  .sec-head{display:flex; align-items:center; gap:12px; margin-bottom:6px}
+  .sec-num{
+    flex:none; width:34px; height:34px; border-radius:12px; background:var(--blue);
+    color:#fff; font-weight:700; font-size:15px; display:grid; place-items:center;
+  }
+  .sec-head h2{font-size:clamp(20px,3.4vw,26px); margin:0}
+  .sec-sub{color:var(--sub); font-size:15px; margin:0 0 18px 46px}
+  @media (max-width:560px){ .sec-sub{margin-left:0} }
+
+  .panel{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+    box-shadow:var(--shadow); padding:18px;
+  }
+
+  /* ---------- 実験パネル ---------- */
+  .lab-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media (max-width:900px){ .lab-grid{grid-template-columns:1fr} }
+  .stage{ background:#FBF6EC; border:1px solid var(--line); border-radius:14px; padding:10px 10px 8px; }
+  .stage-title{
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    font-weight:700; font-size:15px; margin:2px 4px 6px;
+  }
+  .tag{font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px}
+  .tag.water{background:var(--blue-l); color:var(--blue-d)}
+  .tag.elec{background:#EAF3E9; color:#2E7D4F}
+  .stage svg{display:block; width:100%; height:auto}
+
+  .readout{display:flex; gap:8px; flex-wrap:wrap; margin:8px 2px 2px}
+  .chip{
+    flex:1 1 90px; background:#fff; border:1px solid var(--line); border-radius:10px;
+    padding:6px 8px; text-align:center;
+  }
+  .chip .k{font-size:11px; color:var(--sub); display:block; line-height:1.4}
+  .chip .v{font-size:17px; font-weight:700; font-variant-numeric:tabular-nums}
+  .chip .v .u{font-size:11px; font-weight:600; color:var(--sub); margin-left:1px}
+  .chip.hot .v{color:var(--blue)}
+
+  /* ---------- コントローラ ---------- */
+  .controls{margin-top:16px; display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media (max-width:760px){ .controls{grid-template-columns:1fr} }
+  .ctrl{background:#FBF6EC; border:1px solid var(--line); border-radius:14px; padding:12px 14px}
+  .ctrl .row{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+  .ctrl .name{font-weight:700; font-size:15px}
+  .ctrl .name small{font-weight:500; color:var(--sub); font-size:12px; margin-left:4px}
+  .ctrl .val{font-size:15px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--sub)}
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:28px; background:transparent; margin:2px 0 0;
+  }
+  input[type=range]::-webkit-slider-runnable-track{height:10px; border-radius:999px; background:#E8DECF}
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:26px; height:26px; margin-top:-8px; border-radius:50%;
+    background:#fff; border:3px solid var(--blue); box-shadow:0 2px 6px rgba(0,0,0,.15); cursor:pointer;
+  }
+  input[type=range]::-moz-range-track{height:10px; border-radius:999px; background:#E8DECF}
+  input[type=range]::-moz-range-thumb{
+    width:22px; height:22px; border-radius:50%; background:#fff; border:3px solid var(--blue);
+    box-shadow:0 2px 6px rgba(0,0,0,.15); cursor:pointer;
+  }
+  #gate::-webkit-slider-thumb{border-color:var(--orange)}
+  #gate::-moz-range-thumb{border-color:var(--orange)}
+  .scalebar{position:relative; height:18px; margin-top:0}
+  .scalebar .mark{
+    position:absolute; top:0; transform:translateX(-50%); font-size:11px; color:var(--orange);
+    font-weight:700; white-space:nowrap;
+  }
+  .scalebar .mark::before{
+    content:""; position:absolute; left:50%; top:-11px; width:2px; height:10px;
+    background:var(--orange); transform:translateX(-50%); border-radius:2px; opacity:.75;
+  }
+  .btnrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px}
+  button{
+    font:inherit; cursor:pointer; border-radius:999px; border:1px solid var(--line);
+    background:#fff; color:var(--ink); padding:9px 16px; font-size:14px; font-weight:700;
+    box-shadow:0 2px 6px rgba(60,45,20,.06); transition:transform .08s ease, background .15s ease;
+  }
+  button:hover{background:#FFF9F0}
+  button:active{transform:translateY(1px)}
+  button.primary{background:var(--blue); color:#fff; border-color:var(--blue)}
+  button.primary:hover{background:var(--blue-d)}
+  button.warm{background:var(--orange); color:#fff; border-color:var(--orange)}
+  button.warm:hover{background:#CC7F1D}
+  button.on{background:var(--green); color:#fff; border-color:var(--green)}
+
+  .hint{
+    margin-top:14px; background:var(--blue-l); border-radius:12px; padding:12px 16px;
+    font-size:15px; display:flex; gap:10px; align-items:flex-start;
+  }
+  .hint .emoji{font-size:19px; line-height:1.5}
+  .hint p{margin:0; color:#254A63}
+  .hint p b{color:var(--blue-d)}
+
+  /* ---------- 端子カード ---------- */
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  @media (max-width:760px){ .cards{grid-template-columns:1fr} }
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:16px 18px;
+    box-shadow:var(--shadow);
+  }
+  .card .big{font-size:30px; font-weight:800; line-height:1}
+  .card .nm{font-weight:700; margin-left:8px; font-size:16px}
+  .card p{margin:8px 0 0; font-size:14px; color:var(--sub)}
+  .card .mizu{
+    margin-top:10px; font-size:13px; background:var(--blue-l); color:var(--blue-d);
+    border-radius:10px; padding:6px 10px; display:inline-block; font-weight:700;
+  }
+  .card.g{background:var(--orange-l); border-color:#F0DBB8}
+  .card.g .big{color:var(--orange)}
+  .card.g .mizu{background:#F7DDB6; color:#8A5A12}
+  .card.d .big, .card.s .big{color:var(--blue)}
+
+  /* ---------- 対応表 ---------- */
+  table.map{width:100%; border-collapse:collapse; font-size:15px}
+  table.map th{
+    text-align:left; font-size:13px; color:var(--sub); border-bottom:2px solid var(--line);
+    padding:8px 6px; font-weight:700;
+  }
+  table.map td{border-bottom:1px solid var(--line); padding:11px 6px; vertical-align:top}
+  table.map td.arrow{text-align:center; color:var(--orange); font-weight:800; width:44px}
+  table.map td.e{color:var(--blue-d); font-weight:700}
+  @media (max-width:560px){
+    table.map, table.map tbody, table.map tr, table.map td{display:block}
+    table.map thead{display:none}
+    table.map tr{border-bottom:1px solid var(--line); padding:8px 0}
+    table.map td{border:0; padding:2px 4px}
+    table.map td.arrow{text-align:left}
+  }
+
+  /* ---------- ポイント ---------- */
+  .points{display:grid; gap:12px}
+  .point{
+    background:#fff; border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .point > button.head{
+    width:100%; text-align:left; border:0; background:transparent; box-shadow:none; border-radius:0;
+    padding:16px 18px; display:flex; gap:14px; align-items:center; font-size:16px;
+  }
+  .point > button.head:hover{background:#FFFBF4}
+  .point .no{
+    flex:none; width:30px; height:30px; border-radius:10px; background:var(--orange-l);
+    color:var(--orange); display:grid; place-items:center; font-size:14px; font-weight:800;
+  }
+  .point .caret{margin-left:auto; color:var(--sub); transition:transform .2s ease; font-size:13px}
+  .point.open .caret{transform:rotate(180deg)}
+  .point .body{display:none; padding:0 18px 18px 62px; color:var(--sub); font-size:15px}
+  .point.open .body{display:block}
+  @media (max-width:560px){ .point .body{padding-left:18px} }
+
+  /* ---------- 本物のすがた ---------- */
+  .real-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media (max-width:900px){ .real-grid{grid-template-columns:1fr} }
+  .real h3{
+    font-size:16px; margin:0 0 2px; display:flex; align-items:center; gap:8px;
+  }
+  .real h3 .kbn{
+    font-size:11px; font-weight:700; background:var(--blue-l); color:var(--blue-d);
+    border-radius:999px; padding:2px 10px;
+  }
+  .real .cap{font-size:13.5px; color:var(--sub); margin:0 0 8px}
+  .real svg{display:block; width:100%; height:auto; background:#FBF6EC; border-radius:12px}
+  .pinrow{display:flex; gap:8px; margin-top:12px}
+  .pinrow button{flex:1 1 0; min-width:0; padding:8px 6px}
+  .pinrow button.sel{background:var(--orange); color:#fff; border-color:var(--orange)}
+  .pindesc{
+    margin-top:10px; background:#FBF6EC; border:1px solid var(--line); border-radius:12px;
+    padding:10px 14px; font-size:14px; min-height:74px;
+  }
+  .pindesc b{color:var(--blue-d)}
+  .pindesc .mz{display:block; margin-top:4px; font-size:13px; color:var(--sub)}
+  .minictrl{margin-top:12px; background:#FBF6EC; border:1px solid var(--line); border-radius:12px; padding:10px 14px}
+
+  /* ---------- クイズ ---------- */
+  .quiz{display:grid; gap:14px}
+  .q{background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:16px 18px; box-shadow:var(--shadow)}
+  .q .qt{font-weight:700; margin:0 0 12px; font-size:16px}
+  .q .qt .qno{
+    background:var(--blue); color:#fff; font-size:12px; border-radius:8px; padding:2px 9px; margin-right:8px;
+    vertical-align:middle;
+  }
+  .opts{display:flex; gap:8px; flex-wrap:wrap}
+  .opts button{flex:1 1 auto; min-width:130px}
+  .opts button.correct{background:#E4F5EC; border-color:var(--green); color:#20714D}
+  .opts button.wrong{background:#FDEBEF; border-color:var(--pink); color:#9C3450}
+  .fb{display:none; margin-top:12px; font-size:14px; border-radius:12px; padding:10px 14px; line-height:1.75}
+  .fb.show{display:block}
+  .fb.ok{background:#E4F5EC; color:#20714D}
+  .fb.ng{background:#FDEBEF; color:#9C3450}
+  .score{margin-top:2px; text-align:center; font-weight:700; color:var(--sub); font-size:15px}
+
+  /* ---------- まとめ ---------- */
+  .summary{
+    background:linear-gradient(135deg,#1E7FCB,#39A7D8); color:#fff; border-radius:22px;
+    padding:26px 24px; text-align:center; box-shadow:0 10px 26px rgba(30,127,203,.25);
+  }
+  .summary .s1{font-size:14px; opacity:.92; letter-spacing:.08em}
+  .summary .s2{font-size:clamp(19px,3.6vw,26px); font-weight:800; margin-top:6px; line-height:1.5}
+
+  /* ---------- 先生向け ---------- */
+  details.teacher{
+    background:#fff; border:1px solid var(--line); border-radius:var(--r); padding:14px 18px; box-shadow:var(--shadow);
+  }
+  details.teacher summary{cursor:pointer; font-weight:700; font-size:15px}
+  details.teacher .t-body{font-size:13.5px; color:var(--sub); margin-top:10px}
+  details.teacher ul{padding-left:1.2em; margin:6px 0}
+  details.teacher a{color:var(--blue-d)}
+
+  footer{
+    text-align:center; color:var(--sub); font-size:12.5px; padding:26px 0 40px;
+    border-top:1px solid var(--line); margin-top:40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">水と電気のサイエンス</span>
+    <h1>水がたまると、水門がひらく。<br><span class="accent">電圧がかかると、電気の道がひらく。</span></h1>
+    <p class="lead">
+      MOSFET（モスフェット）は、<b>電圧で電流をあやつる部品</b>。<br>
+      むずかしそうだけど、まずは「水」で考えれば大丈夫。つまみを動かして、水を流してみよう。
+    </p>
+    <div class="hero-note">🕹️ <b>動かしながら</b>読むページです</div>
+  </header>
+
+  <!-- ============ 1. 実験パネル ============ -->
+  <section id="lab">
+    <div class="sec-head"><div class="sec-num">1</div><h2>つまみを動かして、水車を回そう</h2></div>
+    <p class="sec-sub">左が「水の世界」、右が「電気の世界」。まったく同じことが、同時におきています。</p>
+
+    <div class="panel">
+      <div class="lab-grid">
+
+        <!-- ===== 水の世界 ===== -->
+        <div class="stage">
+          <div class="stage-title"><span>💧 水の世界</span><span class="tag water" id="wStatus">とまっている</span></div>
+          <svg viewBox="0 0 520 360" role="img" aria-label="水位で水門がひらき、水が流れて水車が回る模型">
+            <defs>
+              <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#5FB4EC"/><stop offset="100%" stop-color="#1667AE"/>
+              </linearGradient>
+              <linearGradient id="orangeGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F5B94D"/><stop offset="100%" stop-color="#D9821A"/>
+              </linearGradient>
+              <linearGradient id="metal" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#B9C0C7"/><stop offset="45%" stop-color="#8C959E"/>
+                <stop offset="100%" stop-color="#6E767E"/>
+              </linearGradient>
+              <radialGradient id="ball" cx="35%" cy="30%">
+                <stop offset="0%" stop-color="#FFE9A8"/><stop offset="100%" stop-color="#D9A227"/>
+              </radialGradient>
+              <clipPath id="tankClip"><rect x="22" y="86" width="224" height="172"/></clipPath>
+              <clipPath id="gtankClip"><rect x="238" y="42" width="54" height="106"/></clipPath>
+            </defs>
+
+            <!-- 背景と地面 -->
+            <rect x="0" y="0" width="520" height="360" fill="#FBF6EC"/>
+            <rect x="0" y="330" width="520" height="30" fill="#F1E5D2"/>
+
+            <!-- 本流タンク（左） -->
+            <g clip-path="url(#tankClip)">
+              <path id="wTankWater" d="" fill="url(#blueGrad)" opacity="0.92"/>
+            </g>
+            <rect x="22" y="86" width="224" height="172" fill="none" stroke="#C9D6E0" stroke-width="3" rx="4"/>
+            <text x="34" y="106" font-size="13" font-weight="700" fill="#2E6C9E">本流（ほんりゅう）のタンク</text>
+
+            <!-- 水路（右・低いところ） -->
+            <path d="M246 258 L390 258" stroke="#C9D6E0" stroke-width="3" fill="none"/>
+            <path d="M284 216 L284 258" stroke="#C9D6E0" stroke-width="3" fill="none"/>
+            <path id="wChannel" d="" fill="url(#blueGrad)" opacity="0.9"/>
+            <rect id="wGateWater" x="246" y="258" width="38" height="0" fill="url(#blueGrad)" opacity="0.92"/>
+            <path id="wFall" d="" fill="url(#blueGrad)" opacity="0.8"/>
+
+            <!-- 受け皿の水 -->
+            <rect x="372" y="316" width="140" height="14" fill="url(#blueGrad)" opacity="0.55"/>
+
+            <!-- 水車 -->
+            <g id="wheelGroup">
+              <g id="wheelSpin">
+                <g stroke="#C9A26B" stroke-width="2" fill="#F3E2C7">
+                  <rect x="423" y="245" width="10" height="22" rx="2"/>
+                  <rect x="423" y="245" width="10" height="22" rx="2" transform="rotate(60 428 286)"/>
+                  <rect x="423" y="245" width="10" height="22" rx="2" transform="rotate(120 428 286)"/>
+                  <rect x="423" y="245" width="10" height="22" rx="2" transform="rotate(180 428 286)"/>
+                  <rect x="423" y="245" width="10" height="22" rx="2" transform="rotate(240 428 286)"/>
+                  <rect x="423" y="245" width="10" height="22" rx="2" transform="rotate(300 428 286)"/>
+                </g>
+                <circle cx="428" cy="286" r="26" fill="#FFFDF8" stroke="#D9BE94" stroke-width="3"/>
+                <line x1="402" y1="286" x2="454" y2="286" stroke="#D9BE94" stroke-width="3"/>
+                <line x1="415" y1="264" x2="441" y2="308" stroke="#D9BE94" stroke-width="3"/>
+                <line x1="415" y1="308" x2="441" y2="264" stroke="#D9BE94" stroke-width="3"/>
+              </g>
+              <circle cx="428" cy="286" r="7" fill="url(#metal)"/>
+            </g>
+            <text x="428" y="350" font-size="13" font-weight="700" fill="#8A6A32" text-anchor="middle">水車（＝モーター）</text>
+
+            <!-- 水門（ゲート板）・案内レール・敷居 -->
+            <rect x="243" y="256" width="42" height="10" rx="2" fill="#CFC3B1"/>
+            <rect id="gatePlate" x="248" y="192" width="30" height="70" rx="3" fill="url(#metal)" stroke="#5F686F"/>
+            <rect x="243" y="146" width="6" height="116" rx="2" fill="#CFC3B1"/>
+            <rect x="277" y="146" width="6" height="116" rx="2" fill="#CFC3B1"/>
+            <rect x="241" y="139" width="44" height="8" rx="3" fill="#B0A79A"/>
+            <text x="290" y="210" font-size="11.5" font-weight="700" fill="#6B7580">水門＝電気の通り道</text>
+
+            <!-- 操作そう（オレンジ） -->
+            <g clip-path="url(#gtankClip)">
+              <path id="gWater" d="" fill="url(#orangeGrad)" opacity="0.95"/>
+            </g>
+            <rect x="238" y="42" width="54" height="106" fill="none" stroke="#E3C08A" stroke-width="3" rx="4"/>
+
+            <!-- しきい値のライン -->
+            <line id="thLine" x1="228" y1="117" x2="302" y2="117" stroke="#8A5A12" stroke-width="2" stroke-dasharray="5 4" opacity=".9"/>
+            <text x="306" y="113" font-size="11.5" font-weight="700" fill="#8A5A12">しきい値</text>
+            <text x="306" y="128" font-size="10.5" fill="#B57A18">ここをこえると開く</text>
+
+            <!-- くさり（たるみ）と浮き -->
+            <path id="gateChain" d="" fill="none" stroke="#8F9AA3" stroke-width="3" stroke-linecap="round"/>
+            <circle id="floatBall" cx="263" cy="136" r="12" fill="url(#ball)" stroke="#B8862A" stroke-width="1.5"/>
+            <text x="265" y="34" font-size="13" font-weight="700" fill="#B57A18" text-anchor="middle">操作する水</text>
+
+            <!-- 流れの粒 -->
+            <g id="drops"></g>
+
+            <!-- ON/OFFバッジ -->
+            <g id="wBadge">
+              <rect x="26" y="288" width="86" height="34" rx="17" fill="#fff" stroke="#C9D6E0" stroke-width="2"/>
+              <text id="wBadgeText" x="69" y="311" font-size="17" font-weight="800" fill="#8C959E" text-anchor="middle">OFF</text>
+            </g>
+          </svg>
+
+          <div class="readout">
+            <div class="chip"><span class="k">そうさ水位</span><span class="v" id="rLevel">0<span class="u">%</span></span></div>
+            <div class="chip"><span class="k">水門のひらき</span><span class="v" id="rOpen">0<span class="u">%</span></span></div>
+            <div class="chip hot"><span class="k">流れる量</span><span class="v" id="rFlow">0.0<span class="u">L/秒</span></span></div>
+          </div>
+        </div>
+
+        <!-- ===== 電気の世界 ===== -->
+        <div class="stage">
+          <div class="stage-title"><span>⚡ 電気の世界</span><span class="tag elec" id="eStatus">とまっている</span></div>
+          <svg viewBox="0 0 520 360" role="img" aria-label="ゲート電圧でMOSFETがONになり、モーターが回る回路図">
+            <defs>
+              <linearGradient id="ch" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#7FD0F5"/><stop offset="100%" stop-color="#1E7FCB"/>
+              </linearGradient>
+              <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+                <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <rect x="0" y="0" width="520" height="360" fill="#FBF6EC"/>
+
+            <!-- MOSFET本体 -->
+            <rect x="300" y="146" width="144" height="76" rx="12" fill="#fff" stroke="#B9C4CE" stroke-width="3"/>
+            <text x="372" y="138" font-size="12" font-weight="700" fill="#5C6B7A" text-anchor="middle">MOSFET</text>
+            <!-- ゲートの板と、うすい膜 -->
+            <line x1="344" y1="166" x2="400" y2="166" stroke="#E5942B" stroke-width="6" stroke-linecap="round"/>
+            <rect x="344" y="174" width="56" height="7" rx="3" fill="#EFE7DA"/>
+            <text x="452" y="172" font-size="10.5" font-weight="700" fill="#8C959E">うすい膜</text>
+            <text x="452" y="185" font-size="10" fill="#8C959E">（通さない）</text>
+            <!-- 通り道 -->
+            <line x1="330" y1="192" x2="414" y2="192" stroke="#E2E8ED" stroke-width="9" stroke-linecap="round"/>
+            <line id="channelBar" x1="330" y1="192" x2="414" y2="192" stroke="url(#ch)" stroke-width="9"
+                  stroke-linecap="round" opacity="0" filter="url(#glow)"/>
+            <text x="372" y="214" font-size="11" font-weight="700" fill="#5C6B7A" text-anchor="middle">電気の通り道</text>
+
+            <!-- 配線 -->
+            <g fill="none" stroke="#B9C4CE" stroke-width="5" stroke-linecap="round">
+              <path d="M96 96 L96 60 L206 60"/>
+              <path d="M262 60 L330 60 L330 192"/>
+              <path d="M414 192 L414 300 L96 300 L96 236"/>
+              <path d="M202 166 L344 166"/>
+            </g>
+            <!-- 電流アニメ -->
+            <path id="mainWire" fill="none" stroke="#1E7FCB" stroke-width="5" stroke-linecap="round"
+                  stroke-dasharray="14 12" opacity="0"
+                  d="M96 96 L96 60 L206 60 M262 60 L330 60 L330 192 L414 192 L414 300 L96 300 L96 236"/>
+
+            <!-- 電池（左） -->
+            <g id="battery">
+              <rect x="70" y="96" width="52" height="140" rx="8" fill="#fff" stroke="#B9C4CE" stroke-width="3"/>
+              <rect id="batFill" x="78" y="128" width="36" height="92" rx="5" fill="#7FBF63"/>
+              <text x="96" y="120" font-size="17" font-weight="800" fill="#5C6B7A" text-anchor="middle">＋</text>
+              <text x="96" y="234" font-size="17" font-weight="800" fill="#5C6B7A" text-anchor="middle">－</text>
+            </g>
+            <text x="96" y="258" font-size="13" font-weight="700" fill="#5C6B7A" text-anchor="middle">電池</text>
+            <text id="eVdd" x="96" y="276" font-size="13" font-weight="700" fill="#2E7D4F" text-anchor="middle">0.0 V</text>
+
+            <!-- モーター -->
+            <g id="motorGroup">
+              <circle cx="234" cy="60" r="30" fill="#fff" stroke="#B9C4CE" stroke-width="3"/>
+              <g id="motorSpin">
+                <g fill="#DCEDFB" stroke="#1E7FCB" stroke-width="2">
+                  <ellipse cx="234" cy="42" rx="7" ry="15"/>
+                  <ellipse cx="234" cy="42" rx="7" ry="15" transform="rotate(120 234 60)"/>
+                  <ellipse cx="234" cy="42" rx="7" ry="15" transform="rotate(240 234 60)"/>
+                </g>
+              </g>
+              <circle cx="234" cy="60" r="5" fill="#8C959E"/>
+            </g>
+            <text x="234" y="112" font-size="13" font-weight="700" fill="#2E6C9E" text-anchor="middle">モーター（＝水車）</text>
+
+            <!-- 端子ラベル -->
+            <text x="340" y="118" font-size="16" font-weight="800" fill="#1E7FCB">D</text>
+            <text x="424" y="252" font-size="16" font-weight="800" fill="#1E7FCB">S</text>
+            <text x="286" y="156" font-size="15" font-weight="800" fill="#E5942B" text-anchor="middle">G</text>
+
+            <!-- ゲート電源 -->
+            <circle cx="176" cy="166" r="26" fill="#FCEBD2" stroke="#E3C08A" stroke-width="3"/>
+            <text id="eVgs" x="176" y="172" font-size="14" font-weight="800" fill="#B57A18" text-anchor="middle">0.0V</text>
+            <text x="176" y="214" font-size="12" font-weight="700" fill="#B57A18" text-anchor="middle">ゲートの電圧</text>
+            <path id="gateWire" d="M202 166 L344 166" fill="none" stroke="#E5942B" stroke-width="4"
+                  stroke-dasharray="8 8" opacity="0.25"/>
+
+            <!-- 電流の粒 -->
+            <g id="eDots"></g>
+
+            <!-- ON/OFF -->
+            <g>
+              <rect x="26" y="312" width="86" height="34" rx="17" fill="#fff" stroke="#C9D6E0" stroke-width="2"/>
+              <text id="eBadgeText" x="69" y="335" font-size="17" font-weight="800" fill="#8C959E" text-anchor="middle">OFF</text>
+            </g>
+            <text id="eNote" x="310" y="336" font-size="12.5" font-weight="700" fill="#8C959E" text-anchor="middle">ゲートの電圧が小さいと、通り道はできない</text>
+          </svg>
+
+          <div class="readout">
+            <div class="chip"><span class="k">ゲート電圧 V<sub>GS</sub></span><span class="v" id="rVgs">0.0<span class="u">V</span></span></div>
+            <div class="chip"><span class="k">電池の電圧</span><span class="v" id="rVdd">0.0<span class="u">V</span></span></div>
+            <div class="chip hot"><span class="k">電流</span><span class="v" id="rCur">0.00<span class="u">A</span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== コントローラ ===== -->
+      <div class="controls">
+        <div class="ctrl">
+          <div class="row">
+            <span class="name">🟠 そうさつまみ<small>水位 ＝ ゲートの電圧</small></span>
+            <span class="val" id="gateVal">0%</span>
+          </div>
+          <input type="range" id="gate" min="0" max="100" value="0" step="1" aria-label="操作する水位・ゲート電圧">
+          <div class="scalebar"><span class="mark" id="thMark" style="left:30%">しきい値</span></div>
+        </div>
+        <div class="ctrl">
+          <div class="row">
+            <span class="name">🔵 ポンプつまみ<small>水の高さ ＝ 電池の電圧</small></span>
+            <span class="val" id="pumpVal">70%</span>
+          </div>
+          <input type="range" id="pump" min="0" max="100" value="70" step="1" aria-label="ポンプ・電池の電圧">
+          <div class="scalebar"></div>
+        </div>
+      </div>
+
+      <div class="btnrow">
+        <button class="warm" id="btnOn">▶ ゆっくりONにする</button>
+        <button id="btnOff">■ OFFにもどす</button>
+        <button id="btnBlink">✨ パチパチ切りかえ</button>
+        <button id="btnNoPump">🤔 ポンプだけ止めてみる</button>
+      </div>
+
+      <div class="hint">
+        <span class="emoji">💡</span>
+        <p id="hintText">つまみを右に動かすと、オレンジの水がたまっていくよ。水門はいつ動きはじめる？</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. 3つの端子 ============ -->
+  <section id="terminals">
+    <div class="sec-head"><div class="sec-num">2</div><h2>3つの端子で、役割分担</h2></div>
+    <p class="sec-sub">端子（たんし）は、電線をつなぐ「出入口」のこと。名前は3つだけ。</p>
+    <div class="cards">
+      <div class="card g">
+        <div><span class="big">G</span><span class="nm">ゲート</span></div>
+        <p>流れをあやつる係。ここにかける電圧で、通り道をひらく。</p>
+        <div class="mizu">💧 オレンジの操作そう</div>
+      </div>
+      <div class="card d">
+        <div><span class="big">D</span><span class="nm">ドレイン</span></div>
+        <p>本流の入口。電流はここから入ってくる。</p>
+        <div class="mizu">💧 高いところのタンク</div>
+      </div>
+      <div class="card s">
+        <div><span class="big">S</span><span class="nm">ソース</span></div>
+        <p>本流の出口。電圧をはかるときの「基準」にもなる。</p>
+        <div class="mizu">💧 低いところの出口</div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <table class="map">
+        <thead><tr><th>水の世界</th><th></th><th>電気の世界</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>操作そうの水位（そこからの高さ）</td><td class="arrow">→</td>
+            <td class="e">GとSの電圧の差（V<sub>GS</sub>）＝ 操作の合図</td>
+          </tr>
+          <tr>
+            <td>本流をおす、水の圧力の差</td><td class="arrow">→</td>
+            <td class="e">DとSの電圧の差 ＝ 本流をおす力</td>
+          </tr>
+          <tr>
+            <td>1秒あたりに流れる水の量</td><td class="arrow">→</td>
+            <td class="e">電流 ＝ 電気の流れる量</td>
+          </tr>
+          <tr>
+            <td>水車が回るいきおい</td><td class="arrow">→</td>
+            <td class="e">モーターの回転</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="hint" style="margin-top:16px">
+        <span class="emoji">📏</span>
+        <p>電圧は、いつも「<b>差</b>」で考える。合図になるのは、ソースを基準にしたゲートの電圧。
+        これを <b>V<sub>GS</sub></b>（ブイ・ジーエス）と書きます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. 3つのポイント ============ -->
+  <section id="points">
+    <div class="sec-head"><div class="sec-num">3</div><h2>覚えることは、この3つ</h2></div>
+    <p class="sec-sub">タップすると、続きが出てきます。「ためす」ボタンで、上の実験パネルが動きます。</p>
+
+    <div class="points">
+      <div class="point open">
+        <button class="head"><span class="no">01</span><span>水がちょっとあるだけでは、ONにならない</span><span class="caret">▼</span></button>
+        <div class="body">
+          流れはじめる目安を <b>しきい値（しきいち）</b> といいます。ここは「水門がちょっと開くところ」。
+          しっかり流すには、部品に合ったゲート電圧が必要です。<br>
+          <div class="btnrow"><button data-demo="th" class="primary">しきい値のあたりをためす</button></div>
+        </div>
+      </div>
+      <div class="point">
+        <button class="head"><span class="no">02</span><span>水門が開いても、おす力がなければ流れない</span><span class="caret">▼</span></button>
+        <div class="body">
+          水門が全開でも、タンクの水が低ければ流れません。電気も同じで、
+          <b>通り道をひらくこと</b>と<b>本流をおすこと</b>は、べつの役割です。<br>
+          <div class="btnrow"><button data-demo="nopump" class="primary">ポンプを止めてためす</button></div>
+        </div>
+      </div>
+      <div class="point">
+        <button class="head"><span class="no">03</span><span>操作する側は、注ぎつづけなくていい</span><span class="caret">▼</span></button>
+        <div class="body">
+          水位さえ保てれば、操作そうに水を注ぎつづける必要はありません。ゲートも、落ち着いた状態では電流がほとんど流れない。
+          ただし<b>切りかえるとき</b>だけ、電気をためたり出したりします。<br>
+          <div class="btnrow"><button data-demo="blink" class="primary">パチパチ切りかえてみる</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <div class="hint" style="margin-top:0">
+        <span class="emoji">🔬</span>
+        <p><b>ほんとうの中では、浮きも水門も動きません。</b><br>
+        ゲートの電圧が <b>電界（でんかい：電気の力がはたらく空間）</b> をつくり、そこに電気の通り道ができます。
+        ゲートと本流のあいだには、電気を通しにくいうすい膜（まく）があります。だから、
+        操作の水が本流に混ざらないのと同じで、ゲートの電気は本流に流れこみません。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. 本物のすがた ============ -->
+  <section id="real" class="real">
+    <div class="sec-head"><div class="sec-num">4</div><h2>たとえから、本物へ</h2></div>
+    <p class="sec-sub">水の模型は、ここまで。ここからは、実物の部品と、その中身をのぞいてみよう。</p>
+
+    <div class="real-grid">
+
+      <!-- ===== 外がわ ===== -->
+      <div class="panel">
+        <h3>外がわ <span class="kbn">足は3本</span></h3>
+        <p class="cap">指の先くらいの小さな部品。足をタップすると、どの端子か分かります。</p>
+        <svg viewBox="0 0 520 340" role="img" aria-label="MOSFETの実物パッケージ（TO-220）と、3本の足">
+          <defs>
+            <linearGradient id="metalP" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#C4CAD0"/><stop offset="45%" stop-color="#98A0A8"/>
+              <stop offset="100%" stop-color="#767E86"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="520" height="340" fill="#FBF6EC"/>
+
+          <!-- 放熱板 -->
+          <rect x="150" y="40" width="150" height="52" rx="3" fill="url(#metalP)" stroke="#6E767E"/>
+          <circle cx="225" cy="64" r="11" fill="#FBF6EC" stroke="#6E767E" stroke-width="2"/>
+          <!-- 本体 -->
+          <rect x="150" y="88" width="150" height="104" rx="4" fill="#33383D"/>
+          <rect x="158" y="96" width="134" height="9" rx="4" fill="#454B51"/>
+          <text x="225" y="136" font-size="14" font-weight="700" fill="#C6CDD3" text-anchor="middle">N-ch MOSFET</text>
+          <text x="225" y="158" font-size="11" fill="#8A9199" text-anchor="middle">（型番は製品ごと）</text>
+
+          <!-- 足 -->
+          <g id="pinGroupG" data-pin="G" style="cursor:pointer">
+            <rect id="hitG" x="168" y="192" width="38" height="96" fill="transparent"/>
+            <rect id="legG" x="182" y="192" width="10" height="72" fill="url(#metalP)" stroke="#6E767E"/>
+            <text id="labG" x="187" y="284" font-size="13" font-weight="800" fill="#5C6B7A" text-anchor="middle">1 G</text>
+          </g>
+          <g id="pinGroupD" data-pin="D" style="cursor:pointer">
+            <rect id="hitD" x="206" y="192" width="38" height="96" fill="transparent"/>
+            <rect id="legD" x="220" y="192" width="10" height="72" fill="url(#metalP)" stroke="#6E767E"/>
+            <text id="labD" x="225" y="284" font-size="13" font-weight="800" fill="#5C6B7A" text-anchor="middle">2 D</text>
+          </g>
+          <g id="pinGroupS" data-pin="S" style="cursor:pointer">
+            <rect id="hitS" x="244" y="192" width="38" height="96" fill="transparent"/>
+            <rect id="legS" x="258" y="192" width="10" height="72" fill="url(#metalP)" stroke="#6E767E"/>
+            <text id="labS" x="263" y="284" font-size="13" font-weight="800" fill="#5C6B7A" text-anchor="middle">3 S</text>
+          </g>
+
+          <!-- 放熱板の説明 -->
+          <path d="M300 62 L344 62" stroke="#B9C4CE" stroke-width="2" fill="none"/>
+          <text x="350" y="56" font-size="11" font-weight="700" fill="#5C6B7A">うら側の金属＝放熱板</text>
+          <text x="350" y="72" font-size="10" fill="#8C959E">ドレインとつながって</text>
+          <text x="350" y="86" font-size="10" fill="#8C959E">いることが多い</text>
+
+          <!-- 大きさ -->
+          <path d="M150 306 L300 306 M150 300 L150 312 M300 300 L300 312" stroke="#B0A79A" stroke-width="2" fill="none"/>
+          <text x="225" y="328" font-size="12" font-weight="700" fill="#8A7C69" text-anchor="middle">よこ 10mmくらい</text>
+
+          <!-- 小さいタイプ -->
+          <rect x="404" y="214" width="46" height="30" rx="3" fill="#33383D"/>
+          <rect x="410" y="244" width="7" height="10" fill="#9AA3AB"/>
+          <rect x="437" y="244" width="7" height="10" fill="#9AA3AB"/>
+          <rect x="423" y="204" width="7" height="10" fill="#9AA3AB"/>
+          <text x="427" y="276" font-size="11" font-weight="700" fill="#5C6B7A" text-anchor="middle">こんな小さいのも</text>
+          <text x="427" y="292" font-size="10" fill="#8C959E" text-anchor="middle">（よこ 3mmくらい）</text>
+        </svg>
+
+        <div class="pinrow">
+          <button data-pin="G">G ゲート</button>
+          <button data-pin="D">D ドレイン</button>
+          <button data-pin="S">S ソース</button>
+        </div>
+        <div class="pindesc" id="pinDesc">
+          足を選ぶと、ここに説明が出ます。3本ぜんぶ見てみよう。
+        </div>
+      </div>
+
+      <!-- ===== 中がわ ===== -->
+      <div class="panel">
+        <h3>中がわ <span class="kbn">通り道ができるところ</span></h3>
+        <p class="cap">部品をうすく切った断面図。つまみを動かすと、中で何がおきているか見えます。</p>
+        <svg viewBox="0 0 520 300" role="img" aria-label="MOSFETの断面図。ゲート電圧で通り道ができるようす">
+          <defs>
+            <linearGradient id="metalX" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#C4CAD0"/><stop offset="45%" stop-color="#98A0A8"/>
+              <stop offset="100%" stop-color="#767E86"/>
+            </linearGradient>
+            <linearGradient id="chX" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#7FD0F5"/><stop offset="100%" stop-color="#1E7FCB"/>
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width="520" height="300" fill="#FBF6EC"/>
+
+          <!-- 端子 -->
+          <rect x="118" y="52" width="9" height="68" fill="url(#metalX)"/>
+          <rect x="386" y="52" width="9" height="68" fill="url(#metalX)"/>
+          <rect x="256" y="52" width="9" height="42" fill="url(#metalX)"/>
+          <text x="122" y="44" font-size="15" font-weight="800" fill="#1E7FCB" text-anchor="middle">D</text>
+          <text x="391" y="44" font-size="15" font-weight="800" fill="#1E7FCB" text-anchor="middle">S</text>
+          <text x="260" y="44" font-size="15" font-weight="800" fill="#E5942B" text-anchor="middle">G</text>
+
+          <!-- シリコンの土台 -->
+          <rect x="40" y="120" width="440" height="140" rx="6" fill="#EBE2D4" stroke="#D6C9B4" stroke-width="2"/>
+          <text x="260" y="238" font-size="12" font-weight="700" fill="#9C8B72" text-anchor="middle">シリコンの土台</text>
+
+          <!-- N型の部屋 -->
+          <rect x="70" y="120" width="110" height="54" rx="3" fill="#CFE3F5" stroke="#9CC3E4" stroke-width="2"/>
+          <rect x="340" y="120" width="110" height="54" rx="3" fill="#CFE3F5" stroke="#9CC3E4" stroke-width="2"/>
+          <text x="125" y="152" font-size="12" font-weight="700" fill="#2E6C9E" text-anchor="middle">入口の部屋</text>
+          <text x="395" y="152" font-size="12" font-weight="700" fill="#2E6C9E" text-anchor="middle">出口の部屋</text>
+
+          <!-- 通り道（チャネル） -->
+          <rect id="xChannel" x="180" y="120" width="160" height="4" fill="url(#chX)" opacity="0"/>
+          <text id="xChLabel" x="260" y="192" font-size="12" font-weight="700" fill="#1E7FCB" text-anchor="middle" opacity="0">
+            ここが「電気の通り道」
+          </text>
+          <text id="xNoCh" x="260" y="192" font-size="12" font-weight="700" fill="#A9A093" text-anchor="middle">
+            通り道は、まだ ない
+          </text>
+
+          <!-- あつまってきた電子 -->
+          <g id="xMinus" opacity="0">
+            <text x="200" y="146" font-size="14" font-weight="800" fill="#1E7FCB">−</text>
+            <text x="235" y="146" font-size="14" font-weight="800" fill="#1E7FCB">−</text>
+            <text x="270" y="146" font-size="14" font-weight="800" fill="#1E7FCB">−</text>
+            <text x="305" y="146" font-size="14" font-weight="800" fill="#1E7FCB">−</text>
+          </g>
+
+          <!-- うすい膜とゲート -->
+          <rect x="180" y="110" width="160" height="10" fill="#FFF6DE" stroke="#E3C08A" stroke-width="1.5"/>
+          <rect x="180" y="92" width="160" height="18" rx="2" fill="#E5942B"/>
+          <g id="xPlus" opacity="0">
+            <text x="200" y="106" font-size="13" font-weight="800" fill="#FFF3DD">＋</text>
+            <text x="235" y="106" font-size="13" font-weight="800" fill="#FFF3DD">＋</text>
+            <text x="270" y="106" font-size="13" font-weight="800" fill="#FFF3DD">＋</text>
+            <text x="305" y="106" font-size="13" font-weight="800" fill="#FFF3DD">＋</text>
+          </g>
+          <path d="M340 114 L392 100" stroke="#E3C08A" stroke-width="2" fill="none"/>
+          <text x="398" y="96" font-size="11" font-weight="700" fill="#B57A18">うすい膜</text>
+          <text x="398" y="110" font-size="10" fill="#B57A18">（電気を通さない）</text>
+
+          <!-- 電流の粒 -->
+          <g id="xDots"></g>
+
+          <text x="260" y="284" font-size="11.5" font-weight="700" fill="#6B7580" text-anchor="middle">
+            浮きも水門もない。電圧が電子をよびよせて、道ができる。
+          </text>
+        </svg>
+
+        <div class="minictrl">
+          <div class="row" style="display:flex; justify-content:space-between; align-items:baseline">
+            <span class="name" style="font-weight:700; font-size:14px">🟠 そうさつまみ（上と連動）</span>
+            <span class="val" id="gate2Val" style="font-weight:700; color:var(--sub)">0.0V</span>
+          </div>
+          <input type="range" id="gate2" min="0" max="100" value="0" step="1" aria-label="ゲート電圧（断面図用）">
+        </div>
+        <div class="pindesc" id="xDesc" style="min-height:0">
+          <b>しきい値をこえると、青い道があらわれます。</b>
+          <span class="mz">＋と−が引きあって電子が集まり、それが通り道（チャネル）になります。上の水の模型と、同じつまみで動いています。</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hint" style="margin-top:16px">
+      <span class="emoji">⚠️</span>
+      <p><b>足の並びは、製品によってちがいます。</b>
+      じっさいに使うときは、かならずその部品の説明書（データシート）で G・D・S を確認しよう。</p>
+    </div>
+  </section>
+
+  <!-- ============ 5. クイズ ============ -->
+  <section id="quiz">
+    <div class="sec-head"><div class="sec-num">5</div><h2>30秒チェック</h2></div>
+    <p class="sec-sub">選ぶとすぐ答え合わせ。まちがえても大丈夫、実験パネルでたしかめよう。</p>
+    <div class="quiz" id="quizBox"></div>
+    <p class="score" id="score">0 / 3 問せいかい</p>
+  </section>
+
+  <section>
+    <div class="summary">
+      <div class="s1">ひとことで言うと</div>
+      <div class="s2">MOSFETは「電圧で、電流をあやつる部品」。</div>
+    </div>
+  </section>
+
+  <section>
+    <details class="teacher">
+      <summary>教える人へ（このページの前提とねらい）</summary>
+      <div class="t-body">
+        <ul>
+          <li>対象は、通常OFFの<b>エンハンスメント形 Nチャネル MOSFET</b>。矢印は電子ではなく<b>電流</b>の向き（D→S）。</li>
+          <li>断面図は、空乏層・基板（ボディ）の接続・ボディダイオードを省いた<b>簡略図</b>です。実物の足の並びは製品ごとに異なるため、ページ内でもデータシート確認を促しています。</li>
+          <li>水模型は<b>定性的なたとえ</b>です。漏れ電流、ボディダイオードなど逆向きの電流経路、飽和／線形領域の区別は省いています。</li>
+          <li>数値（V<sub>GS</sub>・電池の電圧・電流）は、しきい値3V付近・全開7V付近をイメージした<b>表示用の目安</b>で、特定の型番の実測値ではありません。</li>
+          <li>ゲートは「注ぎつづけなくてよい」＝定常状態でゲート電流ほぼゼロ。ただしスイッチング時はゲート容量の充放電で電流が流れる、という順で扱うと自然です。</li>
+          <li>発展：しきい値をこえた直後は「半開き」で発熱しやすい → だからスイッチとしては<b>しっかり開ける</b>、へつなげられます。</li>
+          <li>参考：東芝「NチャネルMOSFETの動作原理」／東芝「必要なゲート電圧」／Infineon「Gate drive for power MOSFETs」</li>
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <footer>
+    水と電気のサイエンス ／ MOSFET・中学生向けはじめの一歩<br>
+    しくみをイメージするための模型です。実物の内部図・端子の並びとは異なります。
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ 定数（水と電気の対応） ============ */
+  var VGS_MAX = 10;        // つまみ100% のときのゲート電圧
+  var VTH     = 3;         // しきい値
+  var VFULL   = 7;         // ここで全開
+  var VDD_MAX = 12;        // 電池の最大電圧
+  var I_MAX   = 2.0;       // 最大電流(A)
+  var FLOW_MAX= 6.0;       // 最大流量(L/秒)
+
+  var el = function(id){ return document.getElementById(id); };
+  var clamp = function(v,a,b){ return v<a?a:(v>b?b:v); };
+  var lerp = function(a,b,t){ return a+(b-a)*t; };
+
+  /* ============ 状態 ============ */
+  var target = { gate:0, pump:70 };   // つまみの値（0-100）
+  var cur    = { gate:0, pump:70 };   // 画面に出ている値（なめらかに追従）
+  var timeS  = 0;
+  var wheelAngle = 0, motorAngle = 0;
+  var blinkTimer = null;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ============ 入力 ============ */
+  var gateInput = el("gate"), pumpInput = el("pump"), gate2Input = el("gate2");
+  gateInput.addEventListener("input", function(){
+    stopBlink(); target.gate = +gateInput.value; gate2Input.value = gateInput.value;
+  });
+  gate2Input.addEventListener("input", function(){
+    stopBlink(); target.gate = +gate2Input.value; gateInput.value = gate2Input.value;
+  });
+  pumpInput.addEventListener("input", function(){ stopBlink(); target.pump = +pumpInput.value; });
+
+  function setGate(v, snap){
+    target.gate = v; gateInput.value = v; gate2Input.value = v; if(snap){ cur.gate = v; }
+  }
+  function setPump(v, snap){ target.pump = v; pumpInput.value = v; if(snap){ cur.pump = v; } }
+
+  function stopBlink(){ if(blinkTimer){ clearInterval(blinkTimer); blinkTimer = null; el("btnBlink").classList.remove("on"); } }
+
+  el("btnOn").addEventListener("click", function(){
+    stopBlink(); setPump(70); setGate(85);
+    say("水位がしきい値をこえたら、水門が持ち上がって本流が流れ出したね。水車がぐんぐん回るよ！");
+  });
+  el("btnOff").addEventListener("click", function(){
+    stopBlink(); setGate(0); setPump(70);
+    say("操作の水をぬくと、水門が下りて本流はストップ。これがOFFの状態。");
+  });
+  el("btnBlink").addEventListener("click", function(){
+    if(blinkTimer){ stopBlink(); say("切りかえをやめました。"); return; }
+    el("btnBlink").classList.add("on");
+    setPump(70);
+    var up = false;
+    blinkTimer = setInterval(function(){ up = !up; setGate(up ? 90 : 0); }, 900);
+    say("ON・OFFをくり返しています。切りかえの<b>とちゅう</b>だけ、ゲートに電気が出入りします。");
+  });
+  el("btnNoPump").addEventListener("click", function(){
+    stopBlink(); setGate(90); setPump(0);
+    say("水門は全開なのに、流れない！ タンクの水が低くて、<b>おす力</b>がないから。");
+  });
+
+  document.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("[data-demo]") : null;
+    if(!b) return;
+    var d = b.getAttribute("data-demo");
+    if(d === "th"){ stopBlink(); setPump(70); setGate(32); say("しきい値のすぐ上。水門は「ちょっとだけ」開いた状態。流れはちょろちょろ。"); }
+    if(d === "nopump"){ el("btnNoPump").click(); }
+    if(d === "blink"){ if(!blinkTimer) el("btnBlink").click(); }
+    document.getElementById("lab").scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"start"});
+  });
+
+  function say(html){ el("hintText").innerHTML = html; }
+
+  /* ============ アコーディオン ============ */
+  Array.prototype.forEach.call(document.querySelectorAll(".point > .head"), function(h){
+    h.addEventListener("click", function(){ h.parentNode.classList.toggle("open"); });
+  });
+
+  /* ============ 水の粒（流れの見える化） ============ */
+  var PATH = [
+    [70,232],[150,242],[210,250],[252,254],[300,254],[350,254],[380,254],
+    [397,257],[387,271],[384,286],[388,305],[400,320],[440,322],[500,324]
+  ];
+  var segLen = [], totalLen = 0;
+  (function(){
+    for(var i=0;i<PATH.length-1;i++){
+      var dx = PATH[i+1][0]-PATH[i][0], dy = PATH[i+1][1]-PATH[i][1];
+      var L = Math.sqrt(dx*dx+dy*dy); segLen.push(L); totalLen += L;
+    }
+  })();
+  function pointAt(t){
+    var d = clamp(t,0,1)*totalLen, i=0;
+    while(i<segLen.length && d>segLen[i]){ d -= segLen[i]; i++; }
+    if(i >= segLen.length) return PATH[PATH.length-1];
+    var r = segLen[i] ? d/segLen[i] : 0;
+    return [lerp(PATH[i][0],PATH[i+1][0],r), lerp(PATH[i][1],PATH[i+1][1],r)];
+  }
+
+  var NDROP = 26, drops = [], dropEls = [];
+  (function(){
+    var g = el("drops"), ns = "http://www.w3.org/2000/svg";
+    for(var i=0;i<NDROP;i++){
+      var c = document.createElementNS(ns,"circle");
+      c.setAttribute("r", (2 + (i%3)).toString());
+      c.setAttribute("fill", "#EAF6FF");
+      c.setAttribute("opacity", "0");
+      g.appendChild(c);
+      dropEls.push(c);
+      drops.push({ p: i/NDROP, w: (i%5)*1.6 });
+    }
+  })();
+
+  var NEDOT = 14, eDots = [], eDotEls = [];
+  var EPATH = [
+    [96,96],[96,60],[206,60],[262,60],[330,60],[330,192],[414,192],[414,300],[96,300],[96,236]
+  ];
+  var eSeg = [], eTotal = 0;
+  (function(){
+    for(var i=0;i<EPATH.length-1;i++){
+      var dx = EPATH[i+1][0]-EPATH[i][0], dy = EPATH[i+1][1]-EPATH[i][1];
+      var L = Math.sqrt(dx*dx+dy*dy); eSeg.push(L); eTotal += L;
+    }
+    var g = el("eDots"), ns = "http://www.w3.org/2000/svg";
+    for(var j=0;j<NEDOT;j++){
+      var c = document.createElementNS(ns,"circle");
+      c.setAttribute("r","4"); c.setAttribute("fill","#1E7FCB"); c.setAttribute("opacity","0");
+      g.appendChild(c); eDotEls.push(c); eDots.push({ p: j/NEDOT });
+    }
+  })();
+  function ePointAt(t){
+    var d = clamp(t,0,1)*eTotal, i=0;
+    while(i<eSeg.length && d>eSeg[i]){ d -= eSeg[i]; i++; }
+    if(i >= eSeg.length) return EPATH[EPATH.length-1];
+    var r = eSeg[i] ? d/eSeg[i] : 0;
+    return [lerp(EPATH[i][0],EPATH[i+1][0],r), lerp(EPATH[i][1],EPATH[i+1][1],r)];
+  }
+
+  /* ============ 断面図：通り道を通る電流の粒 ============ */
+  var NXDOT = 9, xDots = [], xDotEls = [];
+  (function(){
+    var g = el("xDots"), ns = "http://www.w3.org/2000/svg";
+    for(var i=0;i<NXDOT;i++){
+      var c = document.createElementNS(ns,"circle");
+      c.setAttribute("r","3.5"); c.setAttribute("cy","127");
+      c.setAttribute("fill","#0E5E9E"); c.setAttribute("opacity","0");
+      g.appendChild(c); xDotEls.push(c); xDots.push({ p: i/NXDOT });
+    }
+  })();
+
+  /* ============ 実物の足（G・D・S）の説明 ============ */
+  var PIN = {
+    G: { t:"G（ゲート）", d:"ここに電圧をかけると、中に通り道ができる。<b>操作する係</b>の足。",
+         m:"💧 水の模型では、オレンジの「操作そう」" },
+    D: { t:"D（ドレイン）", d:"本流の<b>入口</b>。電池のプラス側から、電流がここへ入ってくる。",
+         m:"💧 水の模型では、高いところの「本流タンク」" },
+    S: { t:"S（ソース）", d:"本流の<b>出口</b>。電圧をはかるときの<b>基準</b>にもなる足。",
+         m:"💧 水の模型では、低いところの「出口」" }
+  };
+  var pinSel = null;
+  function selectPin(k){
+    if(!PIN[k]) return;
+    pinSel = k;
+    ["G","D","S"].forEach(function(p){
+      var on = (p === k);
+      el("leg"+p).setAttribute("fill", on ? "#E5942B" : "url(#metalP)");
+      el("lab"+p).setAttribute("fill", on ? "#B57A18" : "#5C6B7A");
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".pinrow button"), function(b){
+      b.classList.toggle("sel", b.getAttribute("data-pin") === k);
+    });
+    el("pinDesc").innerHTML = "<b>" + PIN[k].t + "</b>　" + PIN[k].d +
+                              '<span class="mz">' + PIN[k].m + "</span>";
+  }
+  document.addEventListener("click", function(e){
+    var t = e.target.closest ? e.target.closest("[data-pin]") : null;
+    if(t) selectPin(t.getAttribute("data-pin"));
+  });
+
+  /* ============ 波打つ水面のパス ============ */
+  function wavyTop(x0, x1, y, bottom, amp, phase){
+    var d = "M" + x0 + " " + y, steps = 10;
+    for(var i=1;i<=steps;i++){
+      var x = x0 + (x1-x0)*i/steps;
+      var yy = y + Math.sin(phase + i*0.9) * amp;
+      d += " L" + x.toFixed(1) + " " + yy.toFixed(1);
+    }
+    d += " L" + x1 + " " + bottom + " L" + x0 + " " + bottom + " Z";
+    return d;
+  }
+
+  /* ============ 毎フレームの更新 ============ */
+  var wTankWater = el("wTankWater"), gWater = el("gWater"), wChannel = el("wChannel"), wFall = el("wFall");
+  var gatePlate = el("gatePlate"), gateChain = el("gateChain"), floatBall = el("floatBall");
+  var wGateWater = el("wGateWater");
+  var wheelSpin = el("wheelSpin"), motorSpin = el("motorSpin");
+  var channelBar = el("channelBar"), mainWire = el("mainWire"), gateWire = el("gateWire"), batFill = el("batFill");
+  var xChannel = el("xChannel"), xChLabel = el("xChLabel"), xNoCh = el("xNoCh");
+  var xPlus = el("xPlus"), xMinus = el("xMinus"), gate2Val = el("gate2Val");
+
+  var GTANK_BOTTOM = 148, GTANK_TOP = 44;      // 操作そうの水面が動く範囲
+  var TANK_BOTTOM = 258, TANK_TOP = 88;        // 本流タンク
+  var GATE_CLOSED_Y = 192, GATE_LIFT = 41.6;   // 水門の板（閉じた位置と、持ち上がる量）
+  var BALL_REST = 136, BALL_TOP = 69.2;        // 浮きが下がりきる／上がりきる位置
+  var CHAIN_LEN = 69.2;                        // くさりの長さ（これ以上はのびない）
+
+  function frame(dt){
+    timeS += dt;
+
+    // つまみの値をなめらかに追従
+    var k = reduce ? 1 : clamp(dt*4.5, 0, 1);
+    cur.gate = lerp(cur.gate, target.gate, k);
+    cur.pump = lerp(cur.pump, target.pump, k);
+
+    // ---- 電気の量を計算 ----
+    var vgs  = cur.gate/100 * VGS_MAX;
+    var open = clamp((vgs - VTH) / (VFULL - VTH), 0, 1);
+    var vdd  = cur.pump/100 * VDD_MAX;
+    var cursn= open * (vdd/VDD_MAX);          // 0-1 の流れの強さ
+    var amp  = cursn * I_MAX;                  // 電流(A)
+    var flow = cursn * FLOW_MAX;               // 流量(L/秒)
+
+    // ---- 水：本流タンクの水位（ポンプが高いほど高い）----
+    var tankY = lerp(TANK_BOTTOM-18, TANK_TOP+8, cur.pump/100);
+    wTankWater.setAttribute("d", wavyTop(22, 246, tankY, TANK_BOTTOM, 1.6, timeS*2));
+
+    // ---- 水：操作そう（オレンジ）と浮き ----
+    var gY = lerp(GTANK_BOTTOM, GTANK_TOP, cur.gate/100);
+    gWater.setAttribute("d", wavyTop(238, 292, gY, GTANK_BOTTOM, 1.2, timeS*2.6));
+    var ballY = clamp(gY - 6, BALL_TOP, BALL_REST);
+    floatBall.setAttribute("cy", ballY.toFixed(1));
+
+    // ---- 水門：くさりがピンと張ってから、持ち上がる ----
+    var gateY = GATE_CLOSED_Y - open*GATE_LIFT;
+    gatePlate.setAttribute("y", gateY.toFixed(1));
+    // 水門の下のすきまを、水がとおる
+    var gateBottom = gateY + 70;
+    var gapTop = Math.max(gateBottom, tankY);
+    var gapH = Math.max(0, 258 - gapTop);
+    wGateWater.setAttribute("y", gapTop.toFixed(1));
+    wGateWater.setAttribute("height", gapH.toFixed(1));
+
+    var cTop = ballY + 12, sag = Math.max(0, CHAIN_LEN - (gateY - cTop));
+    gateChain.setAttribute("d",
+      "M263 " + cTop.toFixed(1) +
+      " Q" + (263 + sag*0.9).toFixed(1) + " " + ((cTop+gateY)/2).toFixed(1) +
+      " 263 " + gateY.toFixed(1));
+
+    // ---- 水：水路と、水車へ落ちる水 ----
+    var depth = 4 + cursn*20;
+    if(cursn > 0.02){
+      var wtop = 258 - depth;
+      wChannel.setAttribute("d", wavyTop(248, 388, wtop, 258, 1.2, timeS*5));
+      var fw = 5 + cursn*13;
+      wFall.setAttribute("d",
+        "M384 " + wtop.toFixed(1) +
+        " C392 " + (wtop+8).toFixed(1) + ", 398 262, 401 274" +
+        " L" + (401+fw) + " 272" +
+        " C" + (398+fw) + " 260, " + (392+fw) + " " + (wtop+6).toFixed(1) + ", " + (384+fw) + " " + wtop.toFixed(1) + " Z");
+      wFall.setAttribute("opacity", (0.4 + cursn*0.45).toFixed(2));
+    } else {
+      wChannel.setAttribute("d", "");
+      wFall.setAttribute("d", "");
+    }
+
+    // ---- 水の粒 ----
+    var speed = 0.06 + cursn*0.42;
+    for(var i=0;i<NDROP;i++){
+      var dp = drops[i];
+      if(cursn > 0.02){
+        dp.p += speed*dt*(0.85 + (i%4)*0.1);
+        if(dp.p > 1) dp.p -= 1;
+        var pt = pointAt(dp.p);
+        dropEls[i].setAttribute("cx", pt[0].toFixed(1));
+        dropEls[i].setAttribute("cy", (pt[1] - 4 - dp.w*0.5 + Math.sin(timeS*6 + i)*1.2).toFixed(1));
+        dropEls[i].setAttribute("opacity", (0.25 + cursn*0.6).toFixed(2));
+      } else {
+        dropEls[i].setAttribute("opacity","0");
+      }
+    }
+
+    // ---- 水車・モーター（水は左側を下におすので、反時計回り）----
+    wheelAngle -= cursn*250*dt;
+    motorAngle += cursn*420*dt;
+    wheelSpin.setAttribute("transform", "rotate(" + (wheelAngle%360).toFixed(1) + " 428 286)");
+    motorSpin.setAttribute("transform", "rotate(" + (motorAngle%360).toFixed(1) + " 234 60)");
+
+    // ---- 電気：通り道・配線・電池 ----
+    channelBar.setAttribute("opacity", open.toFixed(2));
+    channelBar.setAttribute("stroke-width", (3 + open*9).toFixed(1));
+    mainWire.setAttribute("opacity", (cursn*0.95).toFixed(2));
+    mainWire.setAttribute("stroke-dashoffset", (-timeS*(40 + cursn*260)).toFixed(1));
+    gateWire.setAttribute("opacity", (0.2 + (cur.gate/100)*0.75).toFixed(2));
+    batFill.setAttribute("height", Math.max(2, 92*(cur.pump/100)).toFixed(1));
+    batFill.setAttribute("y", (220 - 92*(cur.pump/100)).toFixed(1));
+
+    for(var j=0;j<NEDOT;j++){
+      if(cursn > 0.02){
+        eDots[j].p += (0.05 + cursn*0.28)*dt;
+        if(eDots[j].p > 1) eDots[j].p -= 1;
+        var ep = ePointAt(eDots[j].p);
+        eDotEls[j].setAttribute("cx", ep[0].toFixed(1));
+        eDotEls[j].setAttribute("cy", ep[1].toFixed(1));
+        eDotEls[j].setAttribute("opacity", (0.35 + cursn*0.55).toFixed(2));
+      } else {
+        eDotEls[j].setAttribute("opacity","0");
+      }
+    }
+
+    // ---- 断面図：電子があつまり、通り道ができる ----
+    var charge = clamp(cur.gate/100*1.7, 0, 1);
+    xPlus.setAttribute("opacity", charge.toFixed(2));
+    xMinus.setAttribute("opacity", charge.toFixed(2));
+    xChannel.setAttribute("height", (2 + open*8).toFixed(1));
+    xChannel.setAttribute("opacity", open.toFixed(2));
+    xChLabel.setAttribute("opacity", open.toFixed(2));
+    xNoCh.setAttribute("opacity", (1 - Math.min(1, open*3)).toFixed(2));
+    for(var m=0;m<NXDOT;m++){
+      if(cursn > 0.02){
+        xDots[m].p += (0.08 + cursn*0.5)*dt;
+        if(xDots[m].p > 1) xDots[m].p -= 1;
+        xDotEls[m].setAttribute("cx", (182 + xDots[m].p*156).toFixed(1));
+        xDotEls[m].setAttribute("opacity", (0.4 + cursn*0.5).toFixed(2));
+      } else {
+        xDotEls[m].setAttribute("opacity","0");
+      }
+    }
+    gate2Val.textContent = vgs.toFixed(1) + "V";
+
+    // ---- 数値・ことば ----
+    el("gateVal").textContent = Math.round(target.gate) + "%";
+    el("pumpVal").textContent = Math.round(target.pump) + "%";
+    el("rLevel").innerHTML = Math.round(cur.gate) + '<span class="u">%</span>';
+    el("rOpen").innerHTML  = Math.round(open*100) + '<span class="u">%</span>';
+    el("rFlow").innerHTML  = flow.toFixed(1) + '<span class="u">L/秒</span>';
+    el("rVgs").innerHTML   = vgs.toFixed(1) + '<span class="u">V</span>';
+    el("rVdd").innerHTML   = vdd.toFixed(1) + '<span class="u">V</span>';
+    el("rCur").innerHTML   = amp.toFixed(2) + '<span class="u">A</span>';
+    el("eVgs").textContent = vgs.toFixed(1) + "V";
+    el("eVdd").textContent = vdd.toFixed(1) + " V";
+
+    var onNow = cursn > 0.02;
+    var badge = el("wBadgeText"), ebadge = el("eBadgeText");
+    badge.textContent = onNow ? "ON" : "OFF";
+    ebadge.textContent = onNow ? "ON" : "OFF";
+    badge.setAttribute("fill", onNow ? "#1E7FCB" : "#8C959E");
+    ebadge.setAttribute("fill", onNow ? "#1E7FCB" : "#8C959E");
+
+    var wS = el("wStatus"), eS = el("eStatus"), note = el("eNote");
+    if(open <= 0.001){
+      wS.textContent = "水門は閉じている";
+      eS.textContent = "通り道なし";
+      note.textContent = "ゲートの電圧がしきい値より小さいと、通り道はできない";
+      note.setAttribute("fill", "#8C959E");
+    } else if(!onNow){
+      wS.textContent = "開いたけど、おす力ゼロ";
+      eS.textContent = "電圧ゼロ";
+      note.textContent = "通り道はあるのに、おす電圧がないから電流は流れない";
+      note.setAttribute("fill", "#E5942B");
+    } else if(cursn < 0.3){
+      wS.textContent = "ちょろちょろ流れる";
+      eS.textContent = "少しだけ流れる";
+      note.textContent = "半分ひらいた状態。流せる量はまだ少ない";
+      note.setAttribute("fill", "#E5942B");
+    } else {
+      wS.textContent = "ざぶざぶ流れる！";
+      eS.textContent = "しっかり流れる！";
+      note.textContent = "通り道が広い ＝ 電流がたくさん流れる";
+      note.setAttribute("fill", "#1E7FCB");
+    }
+  }
+
+  var last = 0;
+  function loop(ts){
+    var t = ts/1000;
+    var dt = last ? Math.min(t-last, 0.05) : 0.016;
+    last = t;
+    frame(dt);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  /* ============ クイズ ============ */
+  var QUIZ = [
+    {
+      q:"本流のタンクには水がいっぱい。でも操作そうの水位は低い。水は流れる？",
+      opts:["いきおいよく流れる","ほとんど流れない"],
+      ans:1,
+      ok:"そのとおり！ しきい値をこえないと水門はひらかないので、ほとんど流れません。（V<sub>GS</sub> が小さいとOFF）",
+      ng:"じつは、ほとんど流れません。水門をひらく合図（しきい値）にとどいていないからです。"
+    },
+    {
+      q:"水門は全開！ でも、本流をおす圧力の差がゼロ。水は流れる？",
+      opts:["流れる","流れない"],
+      ans:1,
+      ok:"せいかい！ 通り道をひらくことと、本流をおすことは、べつの役割でしたね。",
+      ng:"おしい！ 道があっても、おす力（電圧の差）がなければ流れません。「ポンプだけ止めてみる」で確かめよう。"
+    },
+    {
+      q:"操作そうのオレンジの水は、本流にまざって流れていく？",
+      opts:["まざる","まざらない"],
+      ans:1,
+      ok:"そのとおり！ 操作の水と本流は別。ゲートと本流のあいだにはうすい膜があって、電気は行き来しません。",
+      ng:"じつは、まざりません。操作する水（ゲート）と流れる水（本流）は、はじめから別々の世界です。"
+    }
+  ];
+
+  var answered = {}, box = el("quizBox");
+  QUIZ.forEach(function(item, i){
+    var d = document.createElement("div");
+    d.className = "q";
+    var opts = item.opts.map(function(o, j){
+      return '<button data-q="'+i+'" data-o="'+j+'">'+o+"</button>";
+    }).join("");
+    d.innerHTML =
+      '<p class="qt"><span class="qno">Q'+(i+1)+'</span>'+item.q+"</p>" +
+      '<div class="opts">'+opts+"</div>" +
+      '<div class="fb" id="fb'+i+'"></div>';
+    box.appendChild(d);
+  });
+
+  box.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("button[data-q]") : null;
+    if(!b) return;
+    var qi = +b.getAttribute("data-q"), oi = +b.getAttribute("data-o");
+    if(answered[qi] !== undefined) return;
+    answered[qi] = oi;
+    var item = QUIZ[qi], correct = (oi === item.ans);
+    b.classList.add(correct ? "correct" : "wrong");
+    if(!correct){
+      var btns = b.parentNode.querySelectorAll("button");
+      btns[item.ans].classList.add("correct");
+    }
+    var fb = el("fb"+qi);
+    fb.className = "fb show " + (correct ? "ok" : "ng");
+    fb.innerHTML = (correct ? "🎉 " : "💡 ") + (correct ? item.ok : item.ng);
+    var n = 0;
+    Object.keys(answered).forEach(function(k){ if(answered[k] === QUIZ[k].ans) n++; });
+    var done = Object.keys(answered).length;
+    el("score").textContent = n + " / 3 問せいかい" + (done === 3 ? (n === 3 ? "　🎉 かんぺき！" : "　もう一度パネルで試そう") : "");
+  });
+
+})();
+</script>
+</body>
+</html>
