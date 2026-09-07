@@ -212,6 +212,24 @@
   .pindesc .mz{display:block; margin-top:4px; font-size:13px; color:var(--sub)}
   .minictrl{margin-top:12px; background:#FBF6EC; border:1px solid var(--line); border-radius:12px; padding:10px 14px}
 
+  /* ---------- 写真 ---------- */
+  .photos{display:grid; grid-template-columns:1.4fr 1fr; gap:18px; align-items:start}
+  @media (max-width:820px){ .photos{grid-template-columns:1fr} }
+  figure.photo{margin:0}
+  .photo-wrap{position:relative; line-height:0; border-radius:12px; overflow:hidden; border:1px solid var(--line)}
+  .photo-wrap img{display:block; width:100%; height:auto}
+  .photo-wrap svg{position:absolute; left:0; top:0; width:100%; height:100%; background:transparent}
+  figure.photo figcaption{font-size:13px; color:var(--sub); margin-top:8px; line-height:1.6}
+  ol.legend{list-style:none; counter-reset:lg; padding:0; margin:8px 0 0; display:grid; gap:5px}
+  ol.legend li{
+    counter-increment:lg; position:relative; padding-left:28px; font-size:13.5px; color:var(--sub);
+  }
+  ol.legend li::before{
+    content:counter(lg); position:absolute; left:0; top:2px; width:20px; height:20px; border-radius:50%;
+    background:var(--orange); color:#fff; font-size:12px; font-weight:800; display:grid; place-items:center;
+  }
+  ol.legend li b{color:var(--ink)}
+
   /* ---------- マイクロビット ---------- */
   .micro-split{display:grid; grid-template-columns:1.35fr 1fr; gap:20px; align-items:start}
   @media (max-width:820px){ .micro-split{grid-template-columns:1fr} }
@@ -813,6 +831,74 @@
     <p class="sec-sub">マイクロビットの役目は、水を注ぐこと。つまり「ゲートに電圧をかける係」です。</p>
 
     <div class="panel">
+      <h3>これが、使う装置 <span class="kbn">写真</span></h3>
+      <p class="cap">じっさいに教室でつなぐ、そのままの姿です。番号の場所を見くらべてみよう。</p>
+      <div class="photos">
+
+        <figure class="photo">
+          <div class="photo-wrap">
+            <img src="img/setup.jpg" width="1400" height="1042"
+                 alt="micro:bit を拡張ボードにさし、Groveケーブルで出力アタッチメント基板につないだ全体">
+            <svg viewBox="0 0 1400 1042" aria-hidden="true">
+              <g font-family="system-ui, sans-serif" font-weight="800" font-size="30" text-anchor="middle">
+                <g><circle cx="490" cy="180" r="27" fill="#E5942B" stroke="#fff" stroke-width="4"/>
+                   <text x="490" y="191" fill="#fff">1</text></g>
+                <g><circle cx="880" cy="600" r="27" fill="#E5942B" stroke="#fff" stroke-width="4"/>
+                   <text x="880" y="611" fill="#fff">2</text></g>
+                <g><circle cx="283" cy="735" r="27" fill="#E5942B" stroke="#fff" stroke-width="4"/>
+                   <text x="283" y="746" fill="#fff">3</text></g>
+                <g><circle cx="285" cy="915" r="27" fill="#E5942B" stroke="#fff" stroke-width="4"/>
+                   <text x="285" y="926" fill="#fff">4</text></g>
+                <g><circle cx="1288" cy="700" r="27" fill="#E5942B" stroke="#fff" stroke-width="4"/>
+                   <text x="1288" y="711" fill="#fff">5</text></g>
+              </g>
+            </svg>
+          </div>
+          <ol class="legend">
+            <li><b>micro:bit</b>　プログラムが動く本体。合図を出す係。</li>
+            <li><b>拡張ボード</b>　端子を Grove ポートにとり出してくれる台。</li>
+            <li><b>Groveポート</b>　刻印は「GND・3V3・P3-P0」。</li>
+            <li><b>Groveケーブル</b>　左から 黒・赤・白・黄 の4本。</li>
+            <li><b>出力アタッチメント基板</b>　MOSFET と振動モーターが載っている。</li>
+          </ol>
+        </figure>
+
+        <figure class="photo">
+          <div class="photo-wrap">
+            <img src="img/board.jpg" width="1000" height="1000"
+                 alt="出力アタッチメント基板のアップ。MOSFETと振動モーターが載っている">
+            <svg viewBox="0 0 1000 1000" aria-hidden="true">
+              <g font-family="system-ui, sans-serif" font-weight="800" font-size="30" text-anchor="middle">
+                <g><circle cx="710" cy="360" r="27" fill="#E5942B" stroke="#fff" stroke-width="4"/>
+                   <text x="710" y="371" fill="#fff">1</text></g>
+                <g><circle cx="480" cy="720" r="27" fill="#E5942B" stroke="#fff" stroke-width="4"/>
+                   <text x="480" y="731" fill="#fff">2</text></g>
+                <g><circle cx="520" cy="240" r="27" fill="#E5942B" stroke="#fff" stroke-width="4"/>
+                   <text x="520" y="251" fill="#fff">3</text></g>
+                <g><circle cx="775" cy="575" r="27" fill="#E5942B" stroke="#fff" stroke-width="4"/>
+                   <text x="775" y="586" fill="#fff">4</text></g>
+              </g>
+            </svg>
+          </div>
+          <ol class="legend">
+            <li><b>MOSFET</b>　放熱板つきの、小さな四角い部品。これが水門。</li>
+            <li><b>振動モーター</b>　まわす相手。これが水車。</li>
+            <li><b>Groveコネクタ</b>　4本の線が入ってくる入口。</li>
+            <li><b>基板の刻印</b>　どの足がどれかを示す文字（S・D・G）。</li>
+          </ol>
+        </figure>
+      </div>
+
+      <div class="hint" style="margin-top:16px">
+        <span class="emoji">🔍</span>
+        <p><b>写真から、つながり方が読みとれます。</b>
+        Groveポートの刻印は左から「GND・3V3・P3-P0」。さしてあるケーブルの色も左から <b>黒・赤・白・黄</b>。
+        つまり <b>黄＝P0（合図）／白＝P3（この基板では未使用）／赤＝3V3（電源）／黒＝GND</b>。
+        下の図と、同じつながり方です。</p>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
       <h3>じっさいの装置 <span class="kbn">信号の道すじ</span></h3>
       <p class="cap">マイクロビット → 拡張ボード → Groveケーブル → 出力アタッチメント基板 → モーター。この順に信号が進みます。</p>
       <div class="micro-split">
@@ -852,7 +938,7 @@
           <path d="M278 100 L340 100 L340 150 L356 150" stroke="#E8C33A" stroke-width="4" fill="none"/>
           <!-- 白：使わない -->
           <path d="M278 116 L300 116" stroke="#F4F4F2" stroke-width="4" fill="none"/>
-          <text x="302" y="120" font-size="9.5" fill="#CFE6DA">未使用</text>
+          <text x="302" y="120" font-size="9.5" fill="#CFE6DA">P3・未使用</text>
           <!-- 赤：電源 → モーター -->
           <path d="M278 132 L320 132 L320 74 L386 74" stroke="#D94B3E" stroke-width="7" fill="none"/>
           <!-- 黒：GND → ソース -->
@@ -886,7 +972,7 @@
           </p>
           <ol class="steps" style="margin-top:0">
             <li><b>黄：P0の合図</b><small>ゲートへ。マイクロビットが出すのは<b>電圧だけ</b>で、ほとんど電流は流れない。</small></li>
-            <li><b>白：もう1本の信号</b><small>この基板では使っていない（ボードの刻印が「P3-P0」なら、2本のうちのもう一方）。</small></li>
+            <li><b>白：もう1本の信号（P3）</b><small>この基板では使っていない。ポートの刻印「P3-P0」の、P3のほう。</small></li>
             <li><b>赤：電源（3V3）</b><small>モーターを回す電流は、こちらから来る。マイクロビットのP0からではない。</small></li>
             <li><b>黒：GND</b><small>もどり道。ソースにつながって、合図と電流の<b>共通の基準</b>になる。</small></li>
           </ol>
@@ -1100,7 +1186,7 @@ pin0.write_analog(512)</pre>
       <h3>実物で、ここを確かめる <span class="kbn">動かす前に</span></h3>
       <ol class="steps">
         <li><b>基板の刻印と、足の向き</b><small>基板に「S・D・G」などの文字がある。どの足がゲートか、刻印と実物を必ず合わせる。逆に付けると動かない、または壊れる。</small></li>
-        <li><b>どの線がP0か</b><small>拡張ボードのポートの刻印（例：P3-P0）を見て、黄がどちらのピンかを確かめ、プログラムのピン名と合わせる。</small></li>
+        <li><b>どの線がP0か</b><small>この装置では、ポートの刻印が左から「GND・3V3・P3-P0」、ケーブルも左から黒・赤・白・黄。だから<b>黄＝P0</b>。ほかのポートにさしたら、プログラムのピン名も変えること。</small></li>
         <li><b>MOSFETの刻印を読んで、しきい値をしらべる</b><small>部品の表面の文字で検索して、3.3Vでしっかり開くタイプ（ロジックレベル）かを確認する。</small></li>
         <li><b>動かしてすぐ、指でさわってみる</b><small>MOSFETがほんのり温かい程度ならOK。熱いときは「半開き」のサイン。すぐ電源を切る。</small></li>
         <li><b>還流ダイオードが基板にあるか</b><small>モーターは止めた瞬間に高い電圧を出す。基板に見あたらなければ、モーターと並列に入れておくと安心。</small></li>

@@ -44,7 +44,11 @@ MOSFET（電圧で電流をあやつる部品）のはたらきを、水門と�
 ## 構成
 
 ```
-index.html   本体（HTML/CSS/JS すべて内包・外部ライブラリなし・画像なし）
+index.html      本体（HTML/CSS/JS すべて内包・外部ライブラリなし）
+img/setup.jpg   実物写真：micro:bit ＋ 拡張ボード ＋ Groveケーブル ＋ 出力アタッチメント基板
+img/board.jpg   実物写真：出力アタッチメント基板のアップ（MOSFETと振動モーター）
 ```
 
-図はすべてインライン SVG。動きは requestAnimationFrame で描いているため、追加のファイルは不要。
+図はすべてインライン SVG、動きは requestAnimationFrame。写真の上の番号マーカーも SVG を重ねて描いている（`.photo-wrap svg` に `background:transparent` を指定しないと、`.real svg` の背景色に隠れるので注意）。写真の原本は原本フォルダの `IMG_3409.JPG` / `IMG_3411.JPG`。
+
+**写真から確定した配線**：拡張ボードの Grove ポートの刻印は左から `GND・3V3・P3-P0`、ささっているケーブルも左から 黒・赤・白・黄。よって **黄＝P0（合図）／白＝P3（未使用）／赤＝3V3（電源）／黒＝GND**。
