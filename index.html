@@ -973,7 +973,7 @@
           <ol class="steps" style="margin-top:0">
             <li><b>黄：P0の合図</b><small>ゲートへ。マイクロビットが出すのは<b>電圧だけ</b>で、ほとんど電流は流れない。</small></li>
             <li><b>白：もう1本の信号（P3）</b><small>この基板では使っていない。ポートの刻印「P3-P0」の、P3のほう。</small></li>
-            <li><b>赤：電源（3V3）</b><small>モーターを回す電流は、こちらから来る。マイクロビットのP0からではない。</small></li>
+            <li><b>赤：電源（3V3）</b><small>モーターを回す電流は、こちらから来る。P0（合図）からではない。もとは、マイクロビットにつないだ USB の電気。</small></li>
             <li><b>黒：GND</b><small>もどり道。ソースにつながって、合図と電流の<b>共通の基準</b>になる。</small></li>
           </ol>
           <div class="hint" style="margin-top:14px">
@@ -1004,107 +1004,105 @@
         <span class="emoji">🚪</span>
         <p>だから、端子でモーターを直接まわそうとしてはいけません。
         <b>MOSFETは「弱い合図で、太い道を開ける水門」</b>。
-        マイクロビットは水門を開けるだけ、モーターを回す水は電源から来る——この役割分担が、制御のきほんです。</p>
+        マイクロビットは水門を開けるだけ、モーターを回す水は電源から来る——この役割分担が、制御のきほんです。<br>
+        なお<b>この装置では、そのモーターの電流も USB からマイクロビットを通って</b>きています。
+        だから、上の 190mA（V2は270mA）という合計の中でやりくりすることになります。</p>
       </div>
     </div>
 
     <div class="panel" style="margin-top:16px">
-      <h3>つなぎ方 <span class="kbn">Nチャネル・下側スイッチ</span></h3>
-      <p class="cap">アタッチメント基板の中身は、だいたいこの回路です。モーターの<b>下がわ</b>に MOSFET を入れて、地面（GND）へ落とします。</p>
+      <h3>この装置のつなぎ方 <span class="kbn">Nチャネル・下側スイッチ</span></h3>
+      <p class="cap">アタッチメント基板の中身です。モーターの<b>下がわ</b>に MOSFET を入れて、地面（GND）へ落とします。電源も、マイクロビット（USB）から。</p>
       <div class="micro-split">
-        <svg viewBox="0 0 520 340" role="img" aria-label="マイクロビットのP0でMOSFETを操作し、モーターを回す配線図">
-          <defs>
-            <linearGradient id="padG" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#F0D48A"/><stop offset="100%" stop-color="#C9A24B"/>
-            </linearGradient>
-          </defs>
+        <svg viewBox="0 0 520 340" role="img" aria-label="マイクロビットのP0でMOSFETを操作し、USB電源でモーターを回す配線図">
           <rect x="0" y="0" width="520" height="340" fill="#FBF6EC"/>
+          <text x="300" y="50" font-size="12.5" font-weight="700" fill="#6B7580" text-anchor="middle">電源もマイクロビット（USB）から</text>
+
+          <!-- USB -->
+          <rect x="6" y="152" width="30" height="30" rx="4" fill="#9AA3AB" stroke="#6E767E" stroke-width="2"/>
+          <text x="21" y="144" font-size="10.5" font-weight="700" fill="#5C6B7A" text-anchor="middle">USB</text>
+          <path d="M36 167 L44 167" stroke="#B9C4CE" stroke-width="5" fill="none"/>
 
           <!-- マイクロビット -->
-          <rect x="24" y="54" width="150" height="104" rx="12" fill="#3C4550"/>
+          <rect x="44" y="80" width="118" height="180" rx="10" fill="#3C4550"/>
           <g fill="#E8604C">
-            <circle cx="60" cy="80" r="4"/><circle cx="76" cy="80" r="4"/><circle cx="92" cy="80" r="4"/>
-            <circle cx="60" cy="96" r="4"/><circle cx="92" cy="96" r="4"/>
-            <circle cx="60" cy="112" r="4"/><circle cx="76" cy="112" r="4"/><circle cx="92" cy="112" r="4"/>
+            <circle cx="72" cy="106" r="4"/><circle cx="90" cy="106" r="4"/><circle cx="108" cy="106" r="4"/>
+            <circle cx="72" cy="124" r="4"/><circle cx="108" cy="124" r="4"/>
+            <circle cx="72" cy="142" r="4"/><circle cx="90" cy="142" r="4"/><circle cx="108" cy="142" r="4"/>
           </g>
-          <text x="140" y="88" font-size="11" font-weight="700" fill="#AEB8C4" text-anchor="middle">micro:</text>
-          <text x="140" y="102" font-size="11" font-weight="700" fill="#AEB8C4" text-anchor="middle">bit</text>
-          <!-- 端子パッド -->
-          <rect x="36" y="158" width="26" height="18" fill="url(#padG)"/>
-          <rect x="86" y="158" width="26" height="18" fill="url(#padG)"/>
-          <rect x="136" y="158" width="26" height="18" fill="url(#padG)"/>
-          <text x="49" y="192" font-size="12" font-weight="800" fill="#5C6B7A" text-anchor="middle">P0</text>
-          <text x="99" y="192" font-size="11" font-weight="700" fill="#B0B8C0" text-anchor="middle">3V</text>
-          <text x="149" y="192" font-size="12" font-weight="800" fill="#5C6B7A" text-anchor="middle">GND</text>
+          <text x="103" y="248" font-size="12" font-weight="700" fill="#AEB8C4" text-anchor="middle">micro:bit</text>
+          <rect x="150" y="113" width="14" height="14" fill="#D9B45E"/>
+          <rect x="150" y="163" width="14" height="14" fill="#D9B45E"/>
+          <rect x="150" y="213" width="14" height="14" fill="#D9B45E"/>
+          <text x="145" y="125" font-size="11.5" font-weight="800" fill="#E8A3A0" text-anchor="end">3V</text>
+          <text x="145" y="175" font-size="11.5" font-weight="800" fill="#F3C97E" text-anchor="end">P0</text>
+          <text x="145" y="225" font-size="11.5" font-weight="800" fill="#C8D2DB" text-anchor="end">GND</text>
 
-          <!-- P0 から ゲート抵抗 へ -->
-          <path d="M49 176 L49 216 L92 216" fill="none" stroke="#E5942B" stroke-width="4"/>
-          <rect x="92" y="206" width="42" height="20" rx="3" fill="#E9DCC4" stroke="#B9A98C" stroke-width="2"/>
-          <text x="113" y="200" font-size="12" font-weight="700" fill="#8A7C69" text-anchor="middle">220Ω</text>
-          <path d="M134 216 L214 216" fill="none" stroke="#E5942B" stroke-width="4"/>
-
-          <!-- プルダウン抵抗 -->
-          <path d="M176 216 L176 286" fill="none" stroke="#E5942B" stroke-width="4"/>
-          <rect x="166" y="246" width="20" height="40" rx="3" fill="#E9DCC4" stroke="#B9A98C" stroke-width="2"/>
-          <text x="194" y="272" font-size="12" font-weight="700" fill="#8A7C69">10kΩ</text>
-
-          <!-- MOSFET -->
-          <rect x="214" y="196" width="96" height="72" rx="10" fill="#fff" stroke="#B9C4CE" stroke-width="3"/>
-          <text x="262" y="261" font-size="11" font-weight="700" fill="#95A0AB" text-anchor="middle">MOSFET</text>
-                    <line x1="228" y1="216" x2="296" y2="216" stroke="#E5942B" stroke-width="5" stroke-linecap="round"/>
-          <line id="mChannel" x1="228" y1="236" x2="296" y2="236" stroke="#C9D6E0" stroke-width="7" stroke-linecap="round"/>
-          <text x="206" y="208" font-size="13" font-weight="800" fill="#E5942B" text-anchor="end">G</text>
-          <text x="268" y="180" font-size="12" font-weight="800" fill="#1E7FCB">D</text>
-          <text x="272" y="292" font-size="12" font-weight="800" fill="#1E7FCB">S</text>
-
-          <!-- D側：モーターへ -->
-          <path d="M262 196 L262 130 L338 130" fill="none" stroke="#B9C4CE" stroke-width="4"/>
-          <!-- S側：GNDへ -->
-          <path d="M262 268 L262 306" fill="none" stroke="#B9C4CE" stroke-width="4"/>
-
-          <!-- モーター -->
+          <!-- 3V → モーター -->
+          <path d="M164 120 L332 120" stroke="#D94B3E" stroke-width="6" fill="none"/>
           <g>
-            <circle cx="368" cy="130" r="30" fill="#fff" stroke="#B9C4CE" stroke-width="3"/>
+            <circle cx="368" cy="120" r="30" fill="#fff" stroke="#B9C4CE" stroke-width="3"/>
             <g id="mFan">
               <g fill="#DCEDFB" stroke="#1E7FCB" stroke-width="2">
-                <ellipse cx="368" cy="112" rx="7" ry="15"/>
-                <ellipse cx="368" cy="112" rx="7" ry="15" transform="rotate(120 368 130)"/>
-                <ellipse cx="368" cy="112" rx="7" ry="15" transform="rotate(240 368 130)"/>
+                <ellipse cx="368" cy="102" rx="7" ry="15"/>
+                <ellipse cx="368" cy="102" rx="7" ry="15" transform="rotate(120 368 120)"/>
+                <ellipse cx="368" cy="102" rx="7" ry="15" transform="rotate(240 368 120)"/>
               </g>
             </g>
-            <circle cx="368" cy="130" r="5" fill="#8C959E"/>
+            <circle cx="368" cy="120" r="5" fill="#8C959E"/>
           </g>
-          <text x="368" y="176" font-size="12" font-weight="700" fill="#2E6C9E" text-anchor="middle">モーター</text>
+          <text x="406" y="116" font-size="12" font-weight="700" fill="#2E6C9E">振動</text>
+          <text x="406" y="132" font-size="12" font-weight="700" fill="#2E6C9E">モーター</text>
 
-          <!-- 還流ダイオード -->
-          <path d="M330 130 L330 74 L406 74 L406 130" fill="none" stroke="#B9C4CE" stroke-width="4"/>
-          <polygon points="358,84 358,64 376,74" fill="#5C6B7A"/>
-          <line x1="377" y1="62" x2="377" y2="86" stroke="#5C6B7A" stroke-width="4"/>
-          <text x="368" y="52" font-size="11" font-weight="700" fill="#5C6B7A" text-anchor="middle">還流ダイオード</text>
+          <!-- モーター → ドレイン -->
+          <path d="M368 150 L368 196" stroke="#B9C4CE" stroke-width="6" fill="none"/>
 
-          <!-- 電池 -->
-          <path d="M398 130 L462 130 L462 190" fill="none" stroke="#B9C4CE" stroke-width="4"/>
-          <rect x="436" y="190" width="52" height="76" rx="6" fill="#fff" stroke="#B9C4CE" stroke-width="3"/>
-          <rect x="442" y="216" width="40" height="44" rx="4" fill="#7FBF63"/>
-          <text x="462" y="210" font-size="15" font-weight="800" fill="#5C6B7A" text-anchor="middle">＋</text>
-          <text x="462" y="262" font-size="15" font-weight="800" fill="#5C6B7A" text-anchor="middle">－</text>
-          <text x="462" y="292" font-size="12" font-weight="700" fill="#5C6B7A" text-anchor="middle">かん電池</text>
-          <path d="M462 266 L462 306" fill="none" stroke="#B9C4CE" stroke-width="4"/>
+          <!-- MOSFET -->
+          <rect x="320" y="196" width="96" height="66" rx="10" fill="#fff" stroke="#B9C4CE" stroke-width="3"/>
+          <line x1="334" y1="216" x2="402" y2="216" stroke="#E5942B" stroke-width="5" stroke-linecap="round"/>
+          <line id="mChannel" x1="334" y1="236" x2="402" y2="236" stroke="#C9D6E0" stroke-width="7" stroke-linecap="round"/>
+          <text x="368" y="256" font-size="10" font-weight="700" fill="#95A0AB" text-anchor="middle">MOSFET</text>
+          <text x="312" y="208" font-size="13" font-weight="800" fill="#E5942B" text-anchor="end">G</text>
+          <text x="378" y="190" font-size="13" font-weight="800" fill="#1E7FCB">D</text>
+          <text x="378" y="284" font-size="13" font-weight="800" fill="#1E7FCB">S</text>
 
-          <!-- GNDレール -->
-          <path d="M149 176 L149 306" fill="none" stroke="#7E8B98" stroke-width="4"/>
-          <path d="M110 306 L490 306" stroke="#7E8B98" stroke-width="6" stroke-linecap="round" fill="none"/>
-          <path d="M176 286 L176 306" fill="none" stroke="#E5942B" stroke-width="4"/>
-          <text x="300" y="330" font-size="12.5" font-weight="800" fill="#5C6B7A" text-anchor="middle">GND（地面）は、ぜんぶ共通につなぐ</text>
+          <!-- P0 → ゲート（直結） -->
+          <path d="M164 170 L250 170 L250 216 L320 216" stroke="#E5942B" stroke-width="4" fill="none"/>
+          <text x="250" y="160" font-size="11" font-weight="700" fill="#B57A18" text-anchor="middle">合図だけ</text>
+
+          <!-- ソース → GND -->
+          <path d="M164 220 L200 220 L200 300 L368 300 L368 262" stroke="#7E8B98" stroke-width="6" fill="none"/>
+          <text x="284" y="322" font-size="12.5" font-weight="800" fill="#5C6B7A" text-anchor="middle">GND（ぜんぶ共通）</text>
         </svg>
 
         <ol class="steps">
-          <li><b>P0 →（220Ω）→ ゲート</b><small>マイクロビットが「水を注ぐ」線。抵抗は切りかえの瞬間の電流をおさえる役。</small></li>
-          <li><b>ゲート →（10kΩ）→ GND</b><small>プルダウン。電源を入れた直後など、P0がふらついている間に勝手に回らないようにする。</small></li>
-          <li><b>モーターに、還流ダイオードを並列</b><small>向きに注意（しま模様のある側が＋）。モーターを止めた瞬間の高い電圧から、MOSFETを守る。</small></li>
-          <li><b>モーターの電源は、別に用意する</b><small>Groveの赤（3V3）から取る作りなら、小さなモーターまで。大きなモーターは、かん電池を別に。マイクロビットの端子から直接は取らない。</small></li>
-          <li><b>GND は、3つとも共通に</b><small>マイクロビット・MOSFETのソース・電池のマイナス。ここがつながっていないと動かない。</small></li>
+          <li><b>P0 → ゲート</b><small>マイクロビットが「水を注ぐ」線。合図（電圧）を送るだけなので、細い線で足りる。</small></li>
+          <li><b>3V → モーター → ドレイン</b><small>モーターを回す電流の道。もとは USB から来ている電気。</small></li>
+          <li><b>ソース → GND</b><small>もどり道。マイクロビットの GND とつながって、合図と電流の共通の基準になる。</small></li>
+          <li><b>電源は USB から</b><small>この装置では、モーターの電流もマイクロビットを通っている。だから、つなげるモーターの大きさに上限がある（ひとつ上の表）。</small></li>
         </ol>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h3>この装置で、省いてある部品 <span class="kbn">なぜ動くのか</span></h3>
+      <p class="cap">教科書の回路図には、あと数点ついていることがあります。この装置では省いてあります。何のための部品で、いつ必要になるのかを知っておこう。</p>
+      <ol class="steps">
+        <li><b>ゲート抵抗（220Ωなど）</b>
+          <small>ゲートは、小さなコンデンサのようなもの。切りかえる一瞬だけ、電気がどっと出入りしようとする。抵抗は、その勢いをおさえる役。
+          <b>省いても動く理由：</b>小さなMOSFETを、ゆっくり切りかえているから。ただし PWM を速くするほど、マイクロビットの端子への負担は増える。</small></li>
+        <li><b>還流（かんりゅう）ダイオード</b>
+          <small>モーターは、止めた瞬間に逆向きの高い電圧を出す。ダイオードは、その電気の逃げ道。
+          <b>省いても動く理由：</b>振動モーターが小さく、出てくる電気の量もわずかなので、MOSFET が耐えられる範囲におさまっている。
+          <b>大きなモーターに替えるときは、必ず入れること。</b></small></li>
+        <li><b>プルダウン抵抗（10kΩなど）</b>
+          <small>電源を入れた直後、プログラムが始まるまでの一瞬、P0 はどちらでもない状態になる。その間、ゲートをきちんと 0V に引っぱっておく役。
+          <b>目印：</b>電源を入れた瞬間に一瞬ブルッと震えるなら、これが無いサイン。</small></li>
+      </ol>
+      <div class="hint" style="margin-top:14px">
+        <span class="emoji">🧪</span>
+        <p>部品を減らすと、回路はすっきりして分かりやすくなります。そのかわり、<b>「小さいモーターだから成り立っている」</b>という前提がつきます。
+        つなぐ相手を大きくするときは、この前提がくずれる——という見方を持てると、もう立派な設計です。</p>
       </div>
     </div>
 
@@ -1189,7 +1187,7 @@ pin0.write_analog(512)</pre>
         <li><b>どの線がP0か</b><small>この装置では、ポートの刻印が左から「GND・3V3・P3-P0」、ケーブルも左から黒・赤・白・黄。だから<b>黄＝P0</b>。ほかのポートにさしたら、プログラムのピン名も変えること。</small></li>
         <li><b>MOSFETの刻印を読んで、しきい値をしらべる</b><small>部品の表面の文字で検索して、3.3Vでしっかり開くタイプ（ロジックレベル）かを確認する。</small></li>
         <li><b>動かしてすぐ、指でさわってみる</b><small>MOSFETがほんのり温かい程度ならOK。熱いときは「半開き」のサイン。すぐ電源を切る。</small></li>
-        <li><b>還流ダイオードが基板にあるか</b><small>モーターは止めた瞬間に高い電圧を出す。基板に見あたらなければ、モーターと並列に入れておくと安心。</small></li>
+        <li><b>つなぐ相手を変えるときは、部品を足す</b><small>この装置は、小さな振動モーターだからゲート抵抗も還流ダイオードも省けている。大きなモーターやソレノイドに替えるときは、上の「省いてある部品」を読みなおすこと。</small></li>
       </ol>
     </div>
 
@@ -1235,6 +1233,9 @@ pin0.write_analog(512)</pre>
           <li>数値（V<sub>GS</sub>・電池の電圧・電流）は、しきい値3V付近・全開7V付近をイメージした<b>表示用の目安</b>で、特定の型番の実測値ではありません。</li>
           <li>ゲートは「注ぎつづけなくてよい」＝定常状態でゲート電流ほぼゼロ。ただしスイッチング時はゲート容量の充放電で電流が流れる、という順で扱うと自然です。</li>
           <li>発展：しきい値をこえた直後は「半開き」で発熱しやすい → だからスイッチとしては<b>しっかり開ける</b>、へつなげられます。</li>
+          <li>第5節の装置は、ゲート抵抗・還流ダイオードを省いた構成です。<b>低側スイッチでは、MOSFETのボディダイオードは還流経路になりません</b>（遮断時にドレインが正へ振れるため逆バイアス）。小さな振動モーターで成立しているのは、誘導性エネルギーが小さく素子のアバランシェ耐量の範囲に収まるためで、負荷を大きくする場合は還流ダイオードが必須です。</li>
+          <li>ゲート抵抗を省くと、スイッチング時のピーク電流がそのまま端子に流れます。低速なON/OFFなら実用上問題になりませんが、PWM周波数を上げるほど負担が増えます。ゲート電荷の充放電＝「切りかえるときだけ電気が出入りする」（第3節③）の実地版として扱えます。</li>
+          <li>電源は USB →micro:bit の 3V3。モーター電流もエッジコネクタの制限（190mA、V2は270mA）の内側でやりくりすることになります。</li>
           <li>参考：東芝「NチャネルMOSFETの動作原理」／東芝「必要なゲート電圧」／Infineon「Gate drive for power MOSFETs」</li>
         </ul>
       </div>
