@@ -1070,6 +1070,13 @@
           <path d="M164 170 L250 170 L250 216 L320 216" stroke="#E5942B" stroke-width="4" fill="none"/>
           <text x="250" y="160" font-size="11" font-weight="700" fill="#B57A18" text-anchor="middle">合図だけ</text>
 
+          <!-- ゲートのプルダウン 10kΩ（基板の裏） -->
+          <path d="M286 216 L286 300" stroke="#E5942B" stroke-width="4" fill="none"/>
+          <rect x="276" y="238" width="20" height="40" rx="3" fill="#E9DCC4" stroke="#B9A98C" stroke-width="2"/>
+          <circle cx="286" cy="216" r="4.5" fill="#E5942B"/>
+          <text x="270" y="264" font-size="12" font-weight="700" fill="#8A7C69" text-anchor="end">10kΩ</text>
+          <text x="270" y="279" font-size="10" fill="#A3947C" text-anchor="end">（基板の裏）</text>
+
           <!-- ソース → GND -->
           <path d="M164 220 L200 220 L200 300 L368 300 L368 262" stroke="#7E8B98" stroke-width="6" fill="none"/>
           <text x="284" y="322" font-size="12.5" font-weight="800" fill="#5C6B7A" text-anchor="middle">GND（ぜんぶ共通）</text>
@@ -1079,8 +1086,61 @@
           <li><b>P0 → ゲート</b><small>マイクロビットが「水を注ぐ」線。合図（電圧）を送るだけなので、細い線で足りる。</small></li>
           <li><b>3V → モーター → ドレイン</b><small>モーターを回す電流の道。もとは USB から来ている電気。</small></li>
           <li><b>ソース → GND</b><small>もどり道。マイクロビットの GND とつながって、合図と電流の共通の基準になる。</small></li>
+          <li><b>ゲート → 10kΩ → GND</b><small>基板の裏に入っている「プルダウン抵抗」。P0がまだ何も出していない間、ゲートを 0V に引きとめておく係。</small></li>
           <li><b>電源は USB から</b><small>この装置では、モーターの電流もマイクロビットを通っている。だから、つなげるモーターの大きさに上限がある（ひとつ上の表）。</small></li>
         </ol>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h3>10kΩは、操作そうの「底の穴」 <span class="kbn">誤作動を防ぐ</span></h3>
+      <p class="cap">基板の裏に入っている、地味だけれど大事な部品です。水の模型で考えると、はっきりします。</p>
+      <div class="micro-split">
+        <svg viewBox="0 0 520 250" role="img" aria-label="操作そうの底に小さな穴があいていて、たまった水が逃げるようす">
+          <rect x="0" y="0" width="520" height="250" fill="#FBF6EC"/>
+          <defs>
+            <linearGradient id="orangeGrad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#F5B94D"/><stop offset="100%" stop-color="#D9821A"/>
+            </linearGradient>
+          </defs>
+
+          <!-- 穴がない場合 -->
+          <text x="130" y="34" font-size="13" font-weight="800" fill="#C0553C" text-anchor="middle">穴がないと…</text>
+          <path d="M70 60 L70 170 L190 170 L190 60" fill="none" stroke="#E3C08A" stroke-width="3"/>
+          <rect x="72" y="120" width="116" height="50" fill="url(#orangeGrad2)" opacity="0.95"/>
+          <g stroke="#C0553C" stroke-width="2.5" fill="none">
+            <path d="M118 78 L118 104 M112 96 L118 104 L124 96"/>
+          </g>
+          <text x="130" y="72" font-size="11" font-weight="700" fill="#C0553C" text-anchor="middle">さわった静電気など</text>
+          <text x="130" y="192" font-size="12" font-weight="700" fill="#C0553C" text-anchor="middle">たまったまま、逃げ場がない</text>
+          <text x="130" y="212" font-size="12" font-weight="800" fill="#C0553C" text-anchor="middle">→ 勝手に水門が開くことがある</text>
+
+          <!-- 穴がある場合 -->
+          <text x="380" y="34" font-size="13" font-weight="800" fill="#2E7D4F" text-anchor="middle">小さな穴があると</text>
+          <path d="M320 60 L320 170 L440 170 L440 60" fill="none" stroke="#E3C08A" stroke-width="3"/>
+          <rect x="322" y="160" width="116" height="10" fill="url(#orangeGrad2)" opacity="0.6"/>
+          <g stroke="#C0553C" stroke-width="2.5" fill="none">
+            <path d="M368 78 L368 104 M362 96 L368 104 L374 96"/>
+          </g>
+          <text x="380" y="72" font-size="11" font-weight="700" fill="#8A7C69" text-anchor="middle">同じように入ってきても</text>
+          <circle cx="380" cy="170" r="5" fill="#FBF6EC" stroke="#B9A98C" stroke-width="2"/>
+          <path d="M380 176 L380 200" stroke="#E5942B" stroke-width="3" stroke-dasharray="4 4" fill="none"/>
+          <text x="380" y="216" font-size="12" font-weight="800" fill="#2E7D4F" text-anchor="middle">たまる前に、逃げていく</text>
+          <text x="452" y="176" font-size="11" font-weight="700" fill="#8A7C69">10kΩ</text>
+        </svg>
+
+        <div>
+          <p style="margin:0 0 10px; font-size:14.5px">
+            ゲートは<b>コンデンサのようなもの</b>。いちど電気が入ると、逃げ道がなければ、そのままたまり続けます。
+            冬の乾いた日に指でさわった静電気くらいでも、「合図が来た」とかんちがいして動いてしまうことがある。
+            10kΩは、その電気を<b>そっと地面へ逃がしておく穴</b>です。
+          </p>
+          <ol class="steps" style="margin-top:0">
+            <li><b>効くのは「P0がまだ何も出していない間」</b><small>電源を入れた直後、プログラムが始まるまで。ケーブルを抜いたときも同じ。プログラムが動いて P0 が 0V を出していれば、P0 自身がずっと強い引きとめ役になる。</small></li>
+            <li><b>なぜ 10kΩ なのか</b><small>穴が大きすぎる（抵抗が小さすぎる）と、注いでも水位が上がらない＝ONにできない。小さすぎると逃げきれない。10kΩは、P0 からは 0.3mA しか食わず、たまった電気はすぐ逃がせる、ちょうどよい大きさ。</small></li>
+            <li><b>これは「静電気よけ」ではない</b><small>バチッとくる本格的な静電気から部品を守る部品ではない。あくまで、ゆっくりたまる電気を逃がして、<b>思っていない動き（誤作動）を防ぐ</b>ための係。</small></li>
+          </ol>
+        </div>
       </div>
     </div>
 
@@ -1095,9 +1155,6 @@
           <small>モーターは、止めた瞬間に逆向きの高い電圧を出す。ダイオードは、その電気の逃げ道。
           <b>省いても動く理由：</b>振動モーターが小さく、出てくる電気の量もわずかなので、MOSFET が耐えられる範囲におさまっている。
           <b>大きなモーターに替えるときは、必ず入れること。</b></small></li>
-        <li><b>プルダウン抵抗（10kΩなど）</b>
-          <small>電源を入れた直後、プログラムが始まるまでの一瞬、P0 はどちらでもない状態になる。その間、ゲートをきちんと 0V に引っぱっておく役。
-          <b>目印：</b>電源を入れた瞬間に一瞬ブルッと震えるなら、これが無いサイン。</small></li>
       </ol>
       <div class="hint" style="margin-top:14px">
         <span class="emoji">🧪</span>
@@ -1234,6 +1291,7 @@ pin0.write_analog(512)</pre>
           <li>ゲートは「注ぎつづけなくてよい」＝定常状態でゲート電流ほぼゼロ。ただしスイッチング時はゲート容量の充放電で電流が流れる、という順で扱うと自然です。</li>
           <li>発展：しきい値をこえた直後は「半開き」で発熱しやすい → だからスイッチとしては<b>しっかり開ける</b>、へつなげられます。</li>
           <li>第5節の装置は、ゲート抵抗・還流ダイオードを省いた構成です。<b>低側スイッチでは、MOSFETのボディダイオードは還流経路になりません</b>（遮断時にドレインが正へ振れるため逆バイアス）。小さな振動モーターで成立しているのは、誘導性エネルギーが小さく素子のアバランシェ耐量の範囲に収まるためで、負荷を大きくする場合は還流ダイオードが必須です。</li>
+          <li>ゲートのプルダウン（10kΩ）は基板裏に実装済み。役目は、P0 が Hi-Z のとき（電源投入直後・リセット中・ケーブル未接続）に<b>ゲート電位を確定させる</b>こと。浮いたゲートは静電気・誘導・漏れ電流で充電され、そのまま保持されます。<b>ESD保護素子ではありません</b>（ゲート酸化膜の保護にはならない）。P0 が出力になれば、ピンの出力インピーダンスのほうが桁違いに低いので、この抵抗の出番は終わります。</li>
           <li>ゲート抵抗を省くと、スイッチング時のピーク電流がそのまま端子に流れます。低速なON/OFFなら実用上問題になりませんが、PWM周波数を上げるほど負担が増えます。ゲート電荷の充放電＝「切りかえるときだけ電気が出入りする」（第3節③）の実地版として扱えます。</li>
           <li>電源は USB →micro:bit の 3V3。モーター電流もエッジコネクタの制限（190mA、V2は270mA）の内側でやりくりすることになります。</li>
           <li>参考：東芝「NチャネルMOSFETの動作原理」／東芝「必要なゲート電圧」／Infineon「Gate drive for power MOSFETs」</li>
