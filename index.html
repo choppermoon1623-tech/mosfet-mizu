@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="MOSFETは電気で操作するスイッチ。水門の模型を動かしながら、電圧と電流、3つの端子、ON・OFFのしくみを学ぶ中学生向け教材です。">
 <title>水でわかる MOSFET ｜ 水と電気のサイエンス</title>
 <style>
   :root{
@@ -305,6 +306,31 @@
     text-align:center; color:var(--sub); font-size:12.5px; padding:26px 0 40px;
     border-top:1px solid var(--line); margin-top:40px;
   }
+
+  /* 読む順番と、予想→実験→確認の手がかり */
+  .lesson-nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:20px 0}
+  .lesson-nav a,.back-link{color:var(--blue-d);text-underline-offset:4px;padding:7px 10px;font-weight:700}
+  .intro-terms{max-width:760px;margin:20px auto 0;text-align:left;font-size:16px;line-height:1.9}
+  .hero-note{border-radius:14px;flex-wrap:wrap;justify-content:center}
+  .experiment-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:0;list-style:none;margin:20px 0}
+  .experiment-steps li{border-top:3px solid var(--blue);padding:12px;background:#F1F7FD;border-radius:0 0 10px 10px}
+  .experiment-steps p{margin:8px 0 12px;font-size:16px}
+  .model-note{font-size:14px;color:var(--sub);line-height:1.8;margin-top:14px}
+  .model-note summary,.extension summary,.code-details summary{cursor:pointer;font-weight:700}
+  .extension>summary{padding:16px 18px;background:var(--blue-l);border:1px solid #B4D7F2;border-radius:14px;color:var(--blue-d)}
+  .extension[open]>.panel{margin-top:16px}
+  .code-details{margin-top:16px;font-size:15px}
+  .code-details h4{margin-bottom:6px}
+  .sec-sub,.card p,.point .body,.hint,.steps li{font-size:16px}
+  .ctrl .name small{display:block;margin-left:0;font-size:14px}
+  .chip .k,.chip .v .u{font-size:13px}
+  .real .cap,.pindesc,.pindesc .mz,.steps li small{font-size:14px}
+  .tag{font-size:13px}
+  a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #125E9B;outline-offset:4px}
+  .warm:focus-visible{outline-color:#754A0C}
+  .summary p{margin-bottom:0}
+  @media(max-width:650px){.experiment-steps{grid-template-columns:1fr}.hero{padding-top:24px}.hero-note{font-size:14px}.panel{padding:14px}.lesson-nav{gap:0}.readout{gap:4px}.chip{padding:6px 4px}}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}button{transition:none}}
 </style>
 </head>
 <body>
@@ -313,18 +339,21 @@
 
   <header class="hero">
     <span class="eyebrow">水と電気のサイエンス</span>
-    <h1>水がたまると、水門がひらく。<br><span class="accent">電圧がかかると、電気の道がひらく。</span></h1>
+    <h1>手で押さずに、スイッチON。<br><span class="accent">電気の流れは、どう変わる？</span></h1>
     <p class="lead">
-      MOSFET（モスフェット）は、<b>電圧で電流をあやつる部品</b>。<br>
-      むずかしそうだけど、まずは「水」で考えれば大丈夫。つまみを動かして、水を流してみよう。
+      MOSFET（モスフェット）は、<b>電気の合図で操作できるスイッチ</b>。<br>
+      指で押すかわりに、電圧をかけてON・OFFを切りかえます。<br>
+      まずは、水門で水の流れを変える模型を動かしてみよう。
     </p>
-    <div class="hero-note">🕹️ <b>動かしながら</b>読むページです</div>
+    <div class="hero-note">今日のゴール：<b>「合図」と「動かす電源」の違い</b>を説明できる</div>
+    <nav class="lesson-nav" aria-label="学ぶ順番"><a href="#lab">水門で実験</a><a href="#terminals">3つの役割</a><a href="#real">本物のしくみ</a><a href="#quiz">クイズ</a></nav>
+    <p class="intro-terms"><b>電圧</b>：電気を流そうとするはたらき。水の高さの差にたとえられます。<br><b>電流</b>：電気の流れの大きさ。1秒間に流れる水の量にたとえられます。</p>
   </header>
 
   <!-- ============ 1. 実験パネル ============ -->
   <section id="lab">
     <div class="sec-head"><div class="sec-num">1</div><h2>つまみを動かして、水車を回そう</h2></div>
-    <p class="sec-sub">左が「水の世界」、右が「電気の世界」。まったく同じことが、同時におきています。</p>
+    <p class="sec-sub">水の模型と電気の回路を見くらべよう。水門は「流れを操作するしくみ」のたとえです。</p>
 
     <div class="panel">
       <div class="lab-grid">
@@ -400,7 +429,7 @@
             <rect x="241" y="139" width="44" height="8" rx="3" fill="#B0A79A"/>
             <text x="290" y="210" font-size="11.5" font-weight="700" fill="#6B7580">水門＝電気の通り道</text>
 
-            <!-- 操作そう（オレンジ） -->
+            <!-- 操作用タンク（オレンジ） -->
             <g clip-path="url(#gtankClip)">
               <path id="gWater" d="" fill="url(#orangeGrad)" opacity="0.95"/>
             </g>
@@ -532,7 +561,7 @@
       <div class="controls">
         <div class="ctrl">
           <div class="row">
-            <span class="name">🟠 そうさつまみ<small>水位 ＝ ゲートの電圧</small></span>
+            <span class="name">🟠 水門を操作する<small>操作用タンクの水位 ↔ ゲートの電圧</small></span>
             <span class="val" id="gateVal">0%</span>
           </div>
           <input type="range" id="gate" min="0" max="100" value="0" step="1" aria-label="操作する水位・ゲート電圧">
@@ -540,7 +569,7 @@
         </div>
         <div class="ctrl">
           <div class="row">
-            <span class="name">🔵 ポンプつまみ<small>水の高さ ＝ 電池の電圧</small></span>
+            <span class="name">🔵 流れを生み出す<small>本流の水の高さ ↔ 電源の電圧</small></span>
             <span class="val" id="pumpVal">70%</span>
           </div>
           <input type="range" id="pump" min="0" max="100" value="70" step="1" aria-label="ポンプ・電池の電圧">
@@ -552,34 +581,41 @@
         <button class="warm" id="btnOn">▶ ゆっくりONにする</button>
         <button id="btnOff">■ OFFにもどす</button>
         <button id="btnBlink">✨ パチパチ切りかえ</button>
-        <button id="btnNoPump">🤔 ポンプだけ止めてみる</button>
+        <button id="btnNoPump">🤔 電源だけ0にする</button>
       </div>
 
       <div class="hint">
         <span class="emoji">💡</span>
-        <p id="hintText">つまみを右に動かすと、オレンジの水がたまっていくよ。水門はいつ動きはじめる？</p>
+        <p id="hintText" role="status">まず予想：青いタンクに水があっても、水門が閉じていたら水車は回るかな？ オレンジのつまみを少しずつ右へ動かそう。</p>
       </div>
+      <ol class="experiment-steps">
+        <li><b>予想する → 開いてみる</b><p>オレンジのつまみを右へ。水門が動きはじめる位置と、電流の表示を見よう。</p><button data-demo="th">開きはじめを観察</button></li>
+        <li><b>比べる → 合図をなくす</b><p>「OFFにもどす」を押そう。青いタンクの水が残っていても、流れは止まるかな？</p><button data-demo="off">合図を0にする</button></li>
+        <li><b>確かめる → 電源をなくす</b><p>水門が開いていても、流れを生む電源が0ならどうなる？</p><button data-demo="nopump">電源だけ0にする</button></li>
+      </ol>
+      <p class="model-note"><b>見つけたいこと：</b>流れるには「通れる道」と「流れを生む電源」の両方が必要です。<br>※ 数字や回転の速さは説明用の目安です。実物の部品にそのまま当てはめることはできません。</p>
+      <details class="model-note"><summary>模型の数字と、本物の違い</summary><p>この模型は、3Vで開きはじめ、7Vでよく通る設定です。電流や回転の速さも説明用の目安で、実際の部品の測定値ではありません。後のmicro:bitの実験には、約3Vの合図で十分にONになる別の部品を選びます。画面の青い粒は「電流の向き」を表し、電子そのものではありません。</p></details>
     </div>
   </section>
 
   <!-- ============ 2. 3つの端子 ============ -->
   <section id="terminals">
     <div class="sec-head"><div class="sec-num">2</div><h2>3つの端子で、役割分担</h2></div>
-    <p class="sec-sub">端子（たんし）は、電線をつなぐ「出入口」のこと。名前は3つだけ。</p>
+    <p class="sec-sub">端子（たんし）は、電線をつなぐ部分。「操作する足」と「電流が通る2本の足」に分けて見よう。</p>
     <div class="cards">
       <div class="card g">
         <div><span class="big">G</span><span class="nm">ゲート</span></div>
-        <p>流れをあやつる係。ここにかける電圧で、通り道をひらく。</p>
-        <div class="mizu">💧 オレンジの操作そう</div>
+        <p><b>合図を受け取る係。</b>ソースを基準にして、ここにかける電圧を変えると、DとSの間が通りやすくなる。</p>
+        <div class="mizu">💧 オレンジの操作用タンク</div>
       </div>
       <div class="card d">
         <div><span class="big">D</span><span class="nm">ドレイン</span></div>
-        <p>本流の入口。電流はここから入ってくる。</p>
+        <p><b>この回路では、電流が入る側。</b>電源の＋からモーターを通ってきた電流が入る。</p>
         <div class="mizu">💧 高いところのタンク</div>
       </div>
       <div class="card s">
         <div><span class="big">S</span><span class="nm">ソース</span></div>
-        <p>本流の出口。電圧をはかるときの「基準」にもなる。</p>
+        <p><b>この回路では、電流が出る側。</b>電源の−へつながる。ゲートの電圧を考えるときの基準にもなる。</p>
         <div class="mizu">💧 低いところの出口</div>
       </div>
     </div>
@@ -589,16 +625,16 @@
         <thead><tr><th>水の世界</th><th></th><th>電気の世界</th></tr></thead>
         <tbody>
           <tr>
-            <td>操作そうの水位（そこからの高さ）</td><td class="arrow">→</td>
+            <td>操作用タンクの、底を基準にした水面の高さ</td><td class="arrow">→</td>
             <td class="e">GとSの電圧の差（V<sub>GS</sub>）＝ 操作の合図</td>
           </tr>
           <tr>
-            <td>本流をおす、水の圧力の差</td><td class="arrow">→</td>
-            <td class="e">DとSの電圧の差 ＝ 本流をおす力</td>
+            <td>本流を流そうとする、水の高さの差</td><td class="arrow">→</td>
+            <td class="e">電源の電圧 ＝ 回路全体に電流を流そうとするはたらき</td>
           </tr>
           <tr>
             <td>1秒あたりに流れる水の量</td><td class="arrow">→</td>
-            <td class="e">電流 ＝ 電気の流れる量</td>
+            <td class="e">電流 ＝ 1秒間に通る電気の量（単位はA：アンペア）</td>
           </tr>
           <tr>
             <td>水車が回るいきおい</td><td class="arrow">→</td>
@@ -609,7 +645,7 @@
       <div class="hint" style="margin-top:16px">
         <span class="emoji">📏</span>
         <p>電圧は、いつも「<b>差</b>」で考える。合図になるのは、ソースを基準にしたゲートの電圧。
-        これを <b>V<sub>GS</sub></b>（ブイ・ジーエス）と書きます。</p>
+        これを <b>V<sub>GS</sub></b>（ブイ・ジーエス）と書きます。<br>たとえば、Sが0V、Gが3Vなら、差は3V。Sが2V、Gが5Vでも、差は同じ3Vです。Vはボルトという単位です。</p>
       </div>
     </div>
   </section>
@@ -621,26 +657,27 @@
 
     <div class="points">
       <div class="point open">
-        <button class="head"><span class="no">01</span><span>水がちょっとあるだけでは、ONにならない</span><span class="caret">▼</span></button>
+        <button class="head"><span class="no">01</span><span>「開きはじめ」と「しっかり開く」は違う</span><span class="caret">▼</span></button>
         <div class="body">
-          流れはじめる目安を <b>しきい値（しきいち）</b> といいます。ここは「水門がちょっと開くところ」。
-          しっかり流すには、部品に合ったゲート電圧が必要です。<br>
+          水門が少し開けば、水は少しずつ流れはじめます。でも、それだけで水車が勢いよく回るとは限りません。<br>
+          MOSFETにも、電流が流れはじめる目安の電圧があります。これが<b>しきい値（しきいち）</b>です。
+          <b>「流れはじめる電圧」と「モーターを動かすのに十分な電圧」は別</b>。十分にONにする電圧は、部品の説明書で確認します。<br>
           <div class="btnrow"><button data-demo="th" class="primary">しきい値のあたりをためす</button></div>
         </div>
       </div>
       <div class="point">
         <button class="head"><span class="no">02</span><span>水門が開いても、おす力がなければ流れない</span><span class="caret">▼</span></button>
         <div class="body">
-          水門が全開でも、タンクの水が低ければ流れません。電気も同じで、
-          <b>通り道をひらくこと</b>と<b>本流をおすこと</b>は、べつの役割です。<br>
+          水門が全開でも、水を流そうとする高さの差がなければ、水車は回りません。<br>
+          MOSFETも、道を開くだけではモーターを動かせません。<b>ゲートへの合図は「流れていいよ」</b>、<b>電源は「動かすエネルギーを届ける係」</b>です。MOSFETがエネルギーを作り出すわけではありません。<br>
           <div class="btnrow"><button data-demo="nopump" class="primary">ポンプを止めてためす</button></div>
         </div>
       </div>
       <div class="point">
-        <button class="head"><span class="no">03</span><span>操作する側は、注ぎつづけなくていい</span><span class="caret">▼</span></button>
+        <button class="head"><span class="no">03</span><span>合図の電気が、そのままモーターへ流れるわけではない</span><span class="caret">▼</span></button>
         <div class="body">
-          水位さえ保てれば、操作そうに水を注ぎつづける必要はありません。ゲートも、落ち着いた状態では電流がほとんど流れない。
-          ただし<b>切りかえるとき</b>だけ、電気をためたり出したりします。<br>
+          オレンジの水は、水門を操作するための水。青い本流とは混ざりません。水位を保てれば、注ぎ続けなくても水門を開けておけます。<br>
+          ゲートも、電圧を保っている間は電流がほとんど流れません。ただし<b>ON・OFFを切りかえるときには、電気をためたり取り出したりする電流が流れます</b>。<br>
           <div class="btnrow"><button data-demo="blink" class="primary">パチパチ切りかえてみる</button></div>
         </div>
       </div>
@@ -650,9 +687,9 @@
       <div class="hint" style="margin-top:0">
         <span class="emoji">🔬</span>
         <p><b>ほんとうの中では、浮きも水門も動きません。</b><br>
-        ゲートの電圧が <b>電界（でんかい：電気の力がはたらく空間）</b> をつくり、そこに電気の通り道ができます。
-        ゲートと本流のあいだには、電気を通しにくいうすい膜（まく）があります。だから、
-        操作の水が本流に混ざらないのと同じで、ゲートの電気は本流に流れこみません。</p>
+        ゲートに電圧をかけると、うすい膜（まく）の向こう側にも電気の力がはたらきます。この力で、<b>もともと部品の中にある電子が集まり、電流が通る道ができます</b>。
+        「離れた場所にも電気の力がはたらく」点は、こすった下じきが髪の毛を引きつける現象と共通しています。力のはたらくようすを<b>電界（でんかい）</b>といいます。<br>
+        ゲートと通り道の間には電気を通しにくい膜があり、電子がゲートから膜を通り抜けて集まるわけではありません。</p>
       </div>
     </div>
   </section>
@@ -660,7 +697,7 @@
   <!-- ============ 4. 本物のすがた ============ -->
   <section id="real" class="real">
     <div class="sec-head"><div class="sec-num">4</div><h2>たとえから、本物へ</h2></div>
-    <p class="sec-sub">水の模型は、ここまで。ここからは、実物の部品と、その中身をのぞいてみよう。</p>
+    <p class="sec-sub">水門のかわりに、部品の中では何が起こる？ 外側の3本の足と、内側の通り道を結びつけよう。</p>
 
     <div class="real-grid">
 
@@ -735,7 +772,7 @@
       <!-- ===== 中がわ ===== -->
       <div class="panel">
         <h3>中がわ <span class="kbn">通り道ができるところ</span></h3>
-        <p class="cap">部品をうすく切った断面図。つまみを動かすと、中で何がおきているか見えます。</p>
+        <p class="cap">しくみを説明するための断面図です。実物そのままの形ではありません。つまみを動かして、青い通り道を見よう。</p>
         <svg viewBox="0 0 520 300" role="img" aria-label="MOSFETの断面図。ゲート電圧で通り道ができるようす">
           <defs>
             <linearGradient id="metalX" x1="0" y1="0" x2="1" y2="0">
@@ -813,7 +850,7 @@
         </div>
         <div class="pindesc" id="xDesc" style="min-height:0">
           <b>しきい値をこえると、青い道があらわれます。</b>
-          <span class="mz">＋と−が引きあって電子が集まり、それが通り道（チャネル）になります。上の水の模型と、同じつまみで動いています。</span>
+          <span class="mz">電子は、−の電気を持つ小さな粒です。ゲート側の＋に引かれて膜の下に集まると、電流が通りやすくなります。この道を「チャネル」といいます。動く青い点は電流の向き（D→S）。電子の移動方向は、その逆です。</span>
         </div>
       </div>
     </div>
@@ -827,12 +864,14 @@
 
   <!-- ============ 5. マイクロビット ============ -->
   <section id="micro" class="real">
-    <div class="sec-head"><div class="sec-num">5</div><h2>マイクロビットで、動かしてみる</h2></div>
-    <p class="sec-sub">マイクロビットの役目は、水を注ぐこと。つまり「ゲートに電圧をかける係」です。</p>
+    <div class="sec-head"><div class="sec-num">5</div><h2>発展：プログラムでモーターを動かす</h2></div>
+    <p class="sec-sub">micro:bit（マイクロビット）は、プログラムで合図を出せる小さなコンピューターです。まずは「合図 → MOSFET → 流れが変わる」が分かればOK。<a href="#quiz">先にクイズへ進む</a></p>
 
+    <details class="extension">
+      <summary>写真・配線・プログラムを見てみる（先生と一緒に）</summary>
     <div class="panel">
       <h3>これが、使う装置 <span class="kbn">写真</span></h3>
-      <p class="cap">じっさいに教室でつなぐ、そのままの姿です。番号の場所を見くらべてみよう。</p>
+      <p class="cap">この教材で紹介する装置の写真です。番号の場所を見くらべて、合図を出す部品と、動く部品を探そう。</p>
       <div class="photos">
 
         <figure class="photo">
@@ -900,7 +939,7 @@
 
     <div class="panel" style="margin-top:16px">
       <h3>じっさいの装置 <span class="kbn">信号の道すじ</span></h3>
-      <p class="cap">マイクロビット → 拡張ボード → Groveケーブル → 出力アタッチメント基板 → モーター。この順に信号が進みます。</p>
+      <p class="cap">合図はmicro:bitのP0からMOSFETのGへ。モーターを動かす電流は電源から流れます。2つの道をたどろう。</p>
       <div class="micro-split">
         <svg viewBox="0 0 520 240" role="img" aria-label="マイクロビットから拡張ボード、Groveケーブル、アタッチメント基板を通ってモーターへつながる道すじ">
           <rect x="0" y="0" width="520" height="240" fill="#FBF6EC"/>
@@ -962,7 +1001,7 @@
 
           <text x="382" y="212" font-size="10.5" font-weight="700" fill="#8C959E" text-anchor="middle">出力アタッチメント基板（自作）</text>
           <text x="260" y="234" font-size="12" font-weight="700" fill="#6B7580" text-anchor="middle">
-            1本のケーブルの中を、細い合図（黄）と太い電流（赤・黒）が別々に走っている
+            黄は合図、赤と黒は電源の道。線の役割を見分けよう。
           </text>
         </svg>
 
@@ -971,16 +1010,16 @@
             Groveケーブルの4本は、それぞれ役目がちがいます。
           </p>
           <ol class="steps" style="margin-top:0">
-            <li><b>黄：P0の合図</b><small>ゲートへ。マイクロビットが出すのは<b>電圧だけ</b>で、ほとんど電流は流れない。</small></li>
+            <li><b>黄：P0の合図</b><small>ゲートへ。電圧で合図を送る線。切りかえるときには、ゲートに電気を出し入れする電流も流れる。</small></li>
             <li><b>白：もう1本の信号（P3）</b><small>この基板では使っていない。ポートの刻印「P3-P0」の、P3のほう。</small></li>
             <li><b>赤：電源（3V3）</b><small>モーターを回す電流は、こちらから来る。P0（合図）からではない。もとは、マイクロビットにつないだ USB の電気。</small></li>
             <li><b>黒：GND</b><small>もどり道。ソースにつながって、合図と電流の<b>共通の基準</b>になる。</small></li>
           </ol>
           <div class="hint" style="margin-top:14px">
             <span class="emoji">💡</span>
-            <p><b>第1節と、まったく同じ話です。</b>
-            オレンジの操作そう（黄の線）と、本流のタンク（赤の線）は別。
-            水門（MOSFET）が、赤い水の道を開け閉めしています。</p>
+            <p><b>第1節の「合図」と「電源」を思い出そう。</b>
+            オレンジの操作用タンク（黄の線）と、本流のタンク（赤の線）は別。
+            MOSFETが、電源からモーターを通る電流の道を開け閉めします。</p>
           </div>
         </div>
       </div>
@@ -993,26 +1032,26 @@
         <thead><tr><th>くらべるもの</th><th></th><th>どれくらい</th></tr></thead>
         <tbody>
           <tr><td>マイクロビットの端子1本が出せる電流</td><td class="arrow">→</td>
-              <td class="e">数mA（強く設定しても15mAくらいまで）</td></tr>
+              <td class="e">合図を出すための小さな電流。使える量は機種や設定で変わる</td></tr>
           <tr><td>ボード全体（エッジコネクタ）の合計</td><td class="arrow">→</td>
-              <td class="e">190mA まで（micro:bit V2 は 270mA まで）</td></tr>
+              <td class="e">機種・電源・本体の動作で変わる。モーター用に全部使えるわけではない</td></tr>
           <tr><td>小さな振動モーターが必要とする電流</td><td class="arrow">→</td>
-              <td class="e">数十mA〜。回りはじめは、もっと大きい</td></tr>
+              <td class="e">機種によって違う。回りはじめや、回転が止められたときにも注意</td></tr>
         </tbody>
       </table>
       <div class="hint" style="margin-top:14px">
         <span class="emoji">🚪</span>
         <p>だから、端子でモーターを直接まわそうとしてはいけません。
-        <b>MOSFETは「弱い合図で、太い道を開ける水門」</b>。
+        <b>MOSFETは「電圧の合図で、電流の道を開ける水門」</b>。
         マイクロビットは水門を開けるだけ、モーターを回す水は電源から来る——この役割分担が、制御のきほんです。<br>
         なお<b>この装置では、そのモーターの電流も USB からマイクロビットを通って</b>きています。
-        だから、上の 190mA（V2は270mA）という合計の中でやりくりすることになります。</p>
+        MOSFETを入れても、電源から取り出せる電流の上限は増えません。先生が機種とモーターの仕様を確かめてから使います。<br><small>単位メモ：1A（アンペア）＝1000mA（ミリアンペア）。</small></p>
       </div>
     </div>
 
     <div class="panel" style="margin-top:16px">
       <h3>この装置のつなぎ方 <span class="kbn">Nチャネル・下側スイッチ</span></h3>
-      <p class="cap">アタッチメント基板の中身です。モーターの<b>下がわ</b>に MOSFET を入れて、地面（GND）へ落とします。電源も、マイクロビット（USB）から。</p>
+      <p class="cap">アタッチメント基板の中身です。モーターから電源へ戻る道にMOSFETを入れます。GND（グラウンド）は、この回路の電圧を比べる基準です。電源も、マイクロビット（USB）から。</p>
       <div class="micro-split">
         <svg viewBox="0 0 520 340" role="img" aria-label="マイクロビットのP0でMOSFETを操作し、USB電源でモーターを回す配線図">
           <rect x="0" y="0" width="520" height="340" fill="#FBF6EC"/>
@@ -1083,7 +1122,7 @@
         </svg>
 
         <ol class="steps">
-          <li><b>P0 → ゲート</b><small>マイクロビットが「水を注ぐ」線。合図（電圧）を送るだけなので、細い線で足りる。</small></li>
+          <li><b>P0 → ゲート</b><small>ゲートを操作する線。切りかえ時には小さな電流も流れる。配線や保護抵抗は、部品に合わせて選ぶ。</small></li>
           <li><b>3V → モーター → ドレイン</b><small>モーターを回す電流の道。もとは USB から来ている電気。</small></li>
           <li><b>ソース → GND</b><small>もどり道。マイクロビットの GND とつながって、合図と電流の共通の基準になる。</small></li>
           <li><b>ゲート → 10kΩ → GND</b><small>基板の裏に入っている「プルダウン抵抗」。P0がまだ何も出していない間、ゲートを 0V に引きとめておく係。</small></li>
@@ -1093,10 +1132,10 @@
     </div>
 
     <div class="panel" style="margin-top:16px">
-      <h3>10kΩは、操作そうの「底の穴」 <span class="kbn">誤作動を防ぐ</span></h3>
+      <h3>10kΩは、操作用タンクの「底の穴」 <span class="kbn">誤作動を防ぐ</span></h3>
       <p class="cap">基板の裏に入っている、地味だけれど大事な部品です。水の模型で考えると、はっきりします。</p>
       <div class="micro-split">
-        <svg viewBox="0 0 520 250" role="img" aria-label="操作そうの底に小さな穴があいていて、たまった水が逃げるようす">
+        <svg viewBox="0 0 520 250" role="img" aria-label="操作用タンクの底に小さな穴があいていて、たまった水が逃げるようす">
           <rect x="0" y="0" width="520" height="250" fill="#FBF6EC"/>
           <defs>
             <linearGradient id="orangeGrad2" x1="0" y1="0" x2="0" y2="1">
@@ -1131,13 +1170,13 @@
 
         <div>
           <p style="margin:0 0 10px; font-size:14.5px">
-            ゲートは<b>コンデンサのようなもの</b>。いちど電気が入ると、逃げ道がなければ、そのままたまり続けます。
-            冬の乾いた日に指でさわった静電気くらいでも、「合図が来た」とかんちがいして動いてしまうことがある。
-            10kΩは、その電気を<b>そっと地面へ逃がしておく穴</b>です。
+            ゲートには、<b>少しの電気をためる性質</b>があります。電気をためる部品を「コンデンサ」といい、ゲートもそれに似ています。
+            合図の線がつながっていないと、残った電気や周囲の影響で、思わぬONになることがあります。
+            10kΩ（10キロオーム＝1万オーム）の抵抗は、たまった電気を<b>GNDへ逃がす、小さな穴</b>の役です。
           </p>
           <ol class="steps" style="margin-top:0">
             <li><b>効くのは「P0がまだ何も出していない間」</b><small>電源を入れた直後、プログラムが始まるまで。ケーブルを抜いたときも同じ。プログラムが動いて P0 が 0V を出していれば、P0 自身がずっと強い引きとめ役になる。</small></li>
-            <li><b>なぜ 10kΩ なのか</b><small>穴が大きすぎる（抵抗が小さすぎる）と、注いでも水位が上がらない＝ONにできない。小さすぎると逃げきれない。10kΩは、P0 からは 0.3mA しか食わず、たまった電気はすぐ逃がせる、ちょうどよい大きさ。</small></li>
+            <li><b>なぜ 10kΩ なのか</b><small>抵抗が小さすぎると、ONの間に余分な電流が多く流れます。大きすぎると、合図がないときに電気を逃がしにくくなります。10kΩはよく使われる値の一例で、3Vをかけると0.3mA流れます。回路に合う値は先生が確認します。</small></li>
             <li><b>これは「静電気よけ」ではない</b><small>バチッとくる本格的な静電気から部品を守る部品ではない。あくまで、ゆっくりたまる電気を逃がして、<b>思っていない動き（誤作動）を防ぐ</b>ための係。</small></li>
           </ol>
         </div>
@@ -1145,33 +1184,29 @@
     </div>
 
     <div class="panel" style="margin-top:16px">
-      <h3>この装置で、省いてある部品 <span class="kbn">なぜ動くのか</span></h3>
-      <p class="cap">教科書の回路図には、あと数点ついていることがあります。この装置では省いてあります。何のための部品で、いつ必要になるのかを知っておこう。</p>
+      <h3>回路を守る、2つの部品 <span class="kbn">先生と確認</span></h3>
+      <p class="cap">上の配線図では省略されています。写真だけでは、保護の有無や十分かどうかまでは判断できません。</p>
       <ol class="steps">
-        <li><b>ゲート抵抗（220Ωなど）</b>
-          <small>ゲートは、小さなコンデンサのようなもの。切りかえる一瞬だけ、電気がどっと出入りしようとする。抵抗は、その勢いをおさえる役。
-          <b>省いても動く理由：</b>小さなMOSFETを、ゆっくり切りかえているから。ただし PWM を速くするほど、マイクロビットの端子への負担は増える。</small></li>
-        <li><b>還流（かんりゅう）ダイオード</b>
-          <small>モーターは、止めた瞬間に逆向きの高い電圧を出す。ダイオードは、その電気の逃げ道。
-          <b>省いても動く理由：</b>振動モーターが小さく、出てくる電気の量もわずかなので、MOSFET が耐えられる範囲におさまっている。
-          <b>大きなモーターに替えるときは、必ず入れること。</b></small></li>
+        <li><b>ゲート抵抗：合図の電気が、一度に流れすぎないようにする</b>
+          <small>ゲートとP0の間に入れる抵抗です。切りかえる瞬間の電流をおさえる役目があります。必要な値は、MOSFETや切りかえる速さに合わせて選びます。</small></li>
+        <li><b>還流（かんりゅう）ダイオード：モーターの電流に、逃げ道をつくる</b>
+          <small>モーターのコイルには、電流を流し続けようとする性質があります。急にOFFにすると高い電圧が生じるため、モーターと並列に電流の逃げ道をつくります。一般的な接続では、ダイオードの帯がある側を電源の＋側に向けます。</small></li>
       </ol>
-      <div class="hint" style="margin-top:14px">
-        <span class="emoji">🧪</span>
-        <p>部品を減らすと、回路はすっきりして分かりやすくなります。そのかわり、<b>「小さいモーターだから成り立っている」</b>という前提がつきます。
-        つなぐ相手を大きくするときは、この前提がくずれる——という見方を持てると、もう立派な設計です。</p>
-      </div>
+      <div class="hint" style="margin-top:14px"><span class="emoji">🧪</span><p><b>「動いた」だけでは、部品を守れているとは限りません。</b>小さなモーターでも、保護を省いてよいとは言い切れません。実物を使う前に、先生が回路図と部品の仕様を確認します。</p></div>
     </div>
 
     <div class="panel" style="margin-top:16px">
       <h3>速さを変える <span class="kbn">パチパチの正体</span></h3>
-      <p class="cap">MOSFETは「半開き」が苦手（熱くなる）。だから、速く開け閉めして<b>平均</b>で調節します。</p>
+        <div class="hint"><span class="emoji">🚰</span><p>同じ長さの時間を10等分して、5つ分をON、5つ分をOFFにすれば、ONの割合は50％。<b>水門を半分開けるのではなく、開いている時間を半分にする</b>イメージです。<br>モーターは、OFFの間も回り続けようとします。<b>50％だから回転も必ず半分、とは限りません</b>。この図の回転は目安です。</p></div>
+        <p class="model-note">ONのときに十分通るようにすると、MOSFETで熱になるエネルギーを減らせます。PWMでも、切りかえ時やONの間の発熱はあります。</p>
+
+      <p class="cap">モーターの速さは、<b>ONにしている時間の割合</b>で調節できます。この方法をPWM（ピー・ダブリュー・エム）といいます。</p>
       <div class="micro-split">
         <div>
         <svg viewBox="0 0 520 230" role="img" aria-label="PWMの波形と、モーターの回る速さ">
           <rect x="0" y="0" width="520" height="230" fill="#FBF6EC"/>
           <text x="24" y="40" font-size="12" font-weight="700" fill="#5C6B7A">P0が出す電圧</text>
-          <text x="24" y="70" font-size="11" font-weight="700" fill="#B57A18">1（3.3V）</text>
+          <text x="24" y="70" font-size="11" font-weight="700" fill="#B57A18">1（約3V）</text>
           <text x="24" y="170" font-size="11" font-weight="700" fill="#8C959E">0（0V）</text>
           <line x1="96" y1="60" x2="404" y2="60" stroke="#E8DECF" stroke-width="2" stroke-dasharray="4 4"/>
           <line x1="96" y1="160" x2="404" y2="160" stroke="#E8DECF" stroke-width="2" stroke-dasharray="4 4"/>
@@ -1191,13 +1226,13 @@
             <circle cx="462" cy="110" r="4.5" fill="#8C959E"/>
           </g>
           <text x="260" y="208" font-size="12" font-weight="700" fill="#6B7580" text-anchor="middle">
-            1秒に何百回も切りかえるので、目には「ずっと回っている」ように見える
+            ONの時間の割合を変える。図は、見やすくゆっくり表示。
           </text>
         </svg>
 
         <div class="minictrl">
           <div class="row" style="display:flex; justify-content:space-between; align-items:baseline">
-            <span class="name" style="font-weight:700; font-size:14px">analogWritePin の値</span>
+            <span class="name" style="font-weight:700; font-size:14px">ONの時間を変える（0〜1023）</span>
             <span class="val" id="pwmVal" style="font-weight:700; color:var(--sub)">512 ／ ひらいている時間 50%</span>
           </div>
           <input type="range" id="pwm" min="0" max="1023" value="512" step="1" aria-label="PWMの値">
@@ -1208,31 +1243,37 @@
         <div class="codewrap">
           <div class="codebox">
             <h4>MakeCode <span>JavaScript</span></h4>
-<pre class="code"><span class="cm">// ON / OFF だけ</span>
-pins.digitalWritePin(DigitalPin.P0, 1)
+<pre class="code"><span class="cm">// まずOFF。AでON、BでOFF。</span>
 pins.digitalWritePin(DigitalPin.P0, 0)
-
-<span class="cm">// 速さを変える（PWM）</span>
-pins.analogSetPeriod(AnalogPin.P0, 1000)
-pins.analogWritePin(AnalogPin.P0, 512)</pre>
+input.onButtonPressed(Button.A, function () {
+    pins.digitalWritePin(DigitalPin.P0, 1)
+})
+input.onButtonPressed(Button.B, function () {
+    pins.digitalWritePin(DigitalPin.P0, 0)
+})</pre>
           </div>
           <div class="codebox">
             <h4>Python <span>MicroPython</span></h4>
-<pre class="code"><span class="cm">from</span> microbit <span class="cm">import</span> *
+<pre class="code">from microbit import *
 
-<span class="cm"># ON / OFF だけ</span>
-pin0.write_digital(1)
 pin0.write_digital(0)
-
-<span class="cm"># 速さを変える（PWM）</span>
-pin0.set_analog_period(1)
-pin0.write_analog(512)</pre>
+while True:
+    if button_b.is_pressed():
+        pin0.write_digital(0)
+    elif button_a.is_pressed():
+        pin0.write_digital(1)
+    sleep(20)</pre>
           </div>
         </div>
-        <p class="cap" style="margin-top:10px">
-          値は <b>0〜1023</b>。周期は MakeCode がマイクロ秒、Python がミリ秒（最小1ms）で指定します。
-          モーターが「ピー」と鳴くときは、周期を短くしてみよう。
-        </p>
+        <p class="cap" style="margin-top:10px">先生が確認した回路で試そう。<b>AボタンでON、BボタンでOFF</b>。合図を出すのはP0、モーターを動かす電流が来るのは電源です。</p>
+        <details class="code-details"><summary>発展：AボタンでPWMの50％にする</summary>
+          <p>Aボタンの処理を次の2行に置きかえます。BボタンはOFFのままです。0〜1023は電圧の値ではなく、ONの時間の割合を指定する数です。</p>
+          <h4>MakeCode</h4><pre class="code">pins.analogWritePin(AnalogPin.P0, 512)
+pins.analogSetPeriod(AnalogPin.P0, 1000)</pre>
+          <h4>MicroPython</h4><pre class="code">pin0.write_analog(512)
+pin0.set_analog_period(1)</pre>
+          <p>どちらも1周期は1ミリ秒（1秒に1000回）。MakeCodeの1000はマイクロ秒、Pythonの1はミリ秒です。切りかえる速さは、先生が回路に合わせて決めます。</p>
+        </details>
         </div>
       </div>
     </div>
@@ -1242,40 +1283,42 @@ pin0.write_analog(512)</pre>
       <ol class="steps">
         <li><b>基板の刻印と、足の向き</b><small>基板に「S・D・G」などの文字がある。どの足がゲートか、刻印と実物を必ず合わせる。逆に付けると動かない、または壊れる。</small></li>
         <li><b>どの線がP0か</b><small>この装置では、ポートの刻印が左から「GND・3V3・P3-P0」、ケーブルも左から黒・赤・白・黄。だから<b>黄＝P0</b>。ほかのポートにさしたら、プログラムのピン名も変えること。</small></li>
-        <li><b>MOSFETの刻印を読んで、しきい値をしらべる</b><small>部品の表面の文字で検索して、3.3Vでしっかり開くタイプ（ロジックレベル）かを確認する。</small></li>
-        <li><b>動かしてすぐ、指でさわってみる</b><small>MOSFETがほんのり温かい程度ならOK。熱いときは「半開き」のサイン。すぐ電源を切る。</small></li>
-        <li><b>つなぐ相手を変えるときは、部品を足す</b><small>この装置は、小さな振動モーターだからゲート抵抗も還流ダイオードも省けている。大きなモーターやソレノイドに替えるときは、上の「省いてある部品」を読みなおすこと。</small></li>
+        <li><b>約3Vの合図で、十分にONになる部品か</b><small>型番から説明書を調べます。「しきい値が低い」だけでは不十分。実際にかけるゲート電圧で、ONのときの抵抗が示されているか、先生と確認します。</small></li>
+        <li><b>電源と、回路を守る部品を確認する</b><small>モーターが必要とする電流、ゲート抵抗、還流ダイオードなどを確認します。部品やモーターを替えるときも、同じ確認が必要です。</small></li>
+        <li><b>変だと思ったら、電源を切って先生に伝える</b><small>回らない、焦げたにおいがする、異常に熱くなるときは使い続けません。熱いかどうかを指で触って試さず、温度の確認は先生に任せます。</small></li>
       </ol>
     </div>
 
     <div class="danger">
-      <span class="emoji">🔥</span>
-      <p><b>いちばんの落とし穴：マイクロビットは 3.3V しか出せません。</b><br>
-      しきい値の高い MOSFET だと、3.3V では<b>半開き</b>のまま。回らない、または部品がとても熱くなります。
-      これは第3節「① 水がちょっとあるだけでは、ONにならない」そのもの。
-      <b>ロジックレベル</b>（3.3V でしっかり開くタイプ）の N チャネル MOSFET を選んでください。
-      データシートでは、しきい値 V<sub>GS(th)</sub> の値と、<b>V<sub>GS</sub>＝2.5V や 3V のときの抵抗（R<sub>DS(on)</sub>）が書いてあるか</b>を見るのが目印です。</p>
+      <span class="emoji">🔌</span>
+      <p><b>部品選び：「開きはじめ」より「十分に通せるか」。</b><br>
+      micro:bitの合図は約3Vです。「ロジックレベル」と呼ばれるMOSFETでも、この電圧で十分にONになるか確認が必要です。
+      説明書のしきい値 V<sub>GS(th)</sub> だけでなく、<b>使うゲート電圧でのON抵抗 R<sub>DS(on)</sub></b> を先生と調べます。<br>
+      ON抵抗は「ONのときにも残る、電流の通りにくさ」です。温度やモーターの電流も合わせて、使えるかを判断します。</p>
     </div>
 
     <div class="hint">
       <span class="emoji">🧯</span>
-      <p>そのほかの注意：<b>MOSFETがさわれないほど熱いときは、すぐ電源を切る</b>（半開きのサイン）。
-      モーターの電源とマイクロビットの電源は分け、GND だけを共通に。配線を変えるときは、かならず電池を外してから。</p>
+      <p><b>配線を変える前に、USBや電池などの電源をすべて外そう。</b>
+      この装置の図は電源をmicro:bitと共有する例です。別のモーター用電源を使う場合は、プラス側をmicro:bitの3V端子へ直結せず、GNDを共通にするなど、先生が回路を確認します。</p>
     </div>
+    </details>
   </section>
 
   <!-- ============ 6. クイズ ============ -->
   <section id="quiz">
-    <div class="sec-head"><div class="sec-num">6</div><h2>30秒チェック</h2></div>
-    <p class="sec-sub">選ぶとすぐ答え合わせ。まちがえても大丈夫、実験パネルでたしかめよう。</p>
+    <div class="sec-head"><div class="sec-num">6</div><h2>「なぜ？」を説明できるかな</h2></div>
+    <p class="sec-sub">5問で確かめよう。答えを選ぶ前に理由も考えてみよう。まちがえた問題は、実験に戻って試してから、もう一度。</p>
     <div class="quiz" id="quizBox"></div>
-    <p class="score" id="score">0 / 3 問せいかい</p>
+    <p class="score" id="score" role="status">0 / 5 問せいかい</p>
+    <div class="btnrow"><button id="quizReset">もう一度チャレンジ</button><a class="back-link" href="#lab">実験に戻って確かめる</a></div>
   </section>
 
   <section>
     <div class="summary">
       <div class="s1">ひとことで言うと</div>
-      <div class="s2">MOSFETは「電圧で、電流をあやつる部品」。</div>
+      <div class="s2">MOSFETは「電圧の合図で、電流の道を開け閉めする部品」。</div>
+      <p>ゲートは合図を受け取り、DとSの間が通りやすくなる。<br>モーターを動かすエネルギーは、電源から届く。</p>
     </div>
   </section>
 
@@ -1290,11 +1333,16 @@ pin0.write_analog(512)</pre>
           <li>数値（V<sub>GS</sub>・電池の電圧・電流）は、しきい値3V付近・全開7V付近をイメージした<b>表示用の目安</b>で、特定の型番の実測値ではありません。</li>
           <li>ゲートは「注ぎつづけなくてよい」＝定常状態でゲート電流ほぼゼロ。ただしスイッチング時はゲート容量の充放電で電流が流れる、という順で扱うと自然です。</li>
           <li>発展：しきい値をこえた直後は「半開き」で発熱しやすい → だからスイッチとしては<b>しっかり開ける</b>、へつなげられます。</li>
-          <li>第5節の装置は、ゲート抵抗・還流ダイオードを省いた構成です。<b>低側スイッチでは、MOSFETのボディダイオードは還流経路になりません</b>（遮断時にドレインが正へ振れるため逆バイアス）。小さな振動モーターで成立しているのは、誘導性エネルギーが小さく素子のアバランシェ耐量の範囲に収まるためで、負荷を大きくする場合は還流ダイオードが必須です。</li>
-          <li>ゲートのプルダウン（10kΩ）は基板裏に実装済み。役目は、P0 が Hi-Z のとき（電源投入直後・リセット中・ケーブル未接続）に<b>ゲート電位を確定させる</b>こと。浮いたゲートは静電気・誘導・漏れ電流で充電され、そのまま保持されます。<b>ESD保護素子ではありません</b>（ゲート酸化膜の保護にはならない）。P0 が出力になれば、ピンの出力インピーダンスのほうが桁違いに低いので、この抵抗の出番は終わります。</li>
-          <li>ゲート抵抗を省くと、スイッチング時のピーク電流がそのまま端子に流れます。低速なON/OFFなら実用上問題になりませんが、PWM周波数を上げるほど負担が増えます。ゲート電荷の充放電＝「切りかえるときだけ電気が出入りする」（第3節③）の実地版として扱えます。</li>
-          <li>電源は USB →micro:bit の 3V3。モーター電流もエッジコネクタの制限（190mA、V2は270mA）の内側でやりくりすることになります。</li>
-          <li>参考：東芝「NチャネルMOSFETの動作原理」／東芝「必要なゲート電圧」／Infineon「Gate drive for power MOSFETs」</li>
+          <li>授業の進め方：まず予想を言葉にする→つまみを1つずつ変える→観察する→「合図と電源の違い」を自分の言葉で説明する。第5節は発展として折りたたみ、初回は第6節のクイズへ進めます。</li>
+          <li>第5節の写真・図は既存教材の装置例を引き継いだものです。MOSFETやモーターの型番、実測電流、裏面の部品、保護回路の仕様はこのページだけでは確認できません。ケーブルの色だけで接続を決めず、ポート表示・回路図・導通で確認してください。</li>
+          <li>単一NチャネルMOSFETの低側スイッチでは、内蔵ボディダイオードだけではモーターの通常の還流経路を作れません。小型モーターでも保護を省けるとは断定できません。還流ダイオードなどの保護と、MOSFET・電源・モーターの定格を確認してから実習してください。</li>
+          <li>プルダウン抵抗は、信号端子が入力状態・未接続などのときにゲートの電圧を定めます。ON中にはこの抵抗にも電流が流れます。「ゲートにほぼ電流が流れない」は、この抵抗を流れる電流を含む駆動回路全体が無消費という意味ではありません。10kΩは一例で、ESD保護の代わりにはなりません。</li>
+          <li>ゲート抵抗はピーク電流や振動を抑えるために検討します。スイッチングが低頻度でも、切りかえ時のピーク電流が小さいとは限りません。ゲート電荷・GPIOの仕様・切りかえ時間から値を選定します。</li>
+          <li>micro:bitの電源余裕は機種・給電方法・動作条件で異なります。公式電源資料ではV1の外付け回路の目安を90mAとし、V2については概要に270mA、実用上の説明に190mAという記載があります。固定の共通上限とせず、使用機種と最悪条件で確認してください。</li>
+          <li>模型のON表示は通り道の状態、流れの表示は電流の有無です。電源が0でも、ゲートに十分な電圧があればMOSFETはONになり得ます。PWMの回転表示は時間割合に比例させた模式表現で、実測の回転数を示しません。</li>
+          <li>参考資料：<a href="https://toshiba.semicon-storage.com/jp/semiconductor/knowledge/faq/mosfet/how-do-n-channel-mosfets-work.html">東芝：MOSFETの動作原理</a> ／ <a href="https://toshiba.semicon-storage.com/jp/semiconductor/knowledge/faq/mosfet/how-much-gate-source-voltage-should-be-applied-to-drive-the-mosf.html">東芝：必要なゲート電圧</a></li>
+          <li>回路の保護：<a href="https://www.ti.com/document-viewer/lit/html/SLVAF04">Texas Instruments：コイルなどを切りかえる際の電圧と保護</a></li>
+          <li>micro:bit公式資料：<a href="https://tech.microbit.org/hardware/powersupply/">電源</a> ／ <a href="https://tech.microbit.org/hardware/edgeconnector/">端子の仕様</a> ／ <a href="https://makecode.microbit.org/reference/pins/analog-write-pin">MakeCodeのPWM</a> ／ <a href="https://microbit-micropython.readthedocs.io/en/v2-docs/pin.html">MicroPythonの入出力</a></li>
         </ul>
       </div>
     </details>
@@ -1334,11 +1382,16 @@ pin0.write_analog(512)</pre>
   var gateInput = el("gate"), pumpInput = el("pump"), gate2Input = el("gate2");
   gateInput.addEventListener("input", function(){
     stopBlink(); target.gate = +gateInput.value; gate2Input.value = gateInput.value;
+    say("合図の大きさを変えています。<b>水門の開きと電流</b>を見くらべよう。電源のつまみは、今どこにあるかな？");
   });
   gate2Input.addEventListener("input", function(){
     stopBlink(); target.gate = +gate2Input.value; gateInput.value = gate2Input.value;
+    say("断面図のつまみと連動しています。ゲートの合図で、<b>DとSの間の通りやすさ</b>が変わります。");
   });
-  pumpInput.addEventListener("input", function(){ stopBlink(); target.pump = +pumpInput.value; });
+  pumpInput.addEventListener("input", function(){
+    stopBlink(); target.pump = +pumpInput.value;
+    say("電源の大きさを変えています。<b>道が閉じたときと、開いたとき</b>で、電流はどう変わるかな？");
+  });
 
   function setGate(v, snap){
     target.gate = v; gateInput.value = v; gate2Input.value = v; if(snap){ cur.gate = v; }
@@ -1349,7 +1402,7 @@ pin0.write_analog(512)</pre>
 
   el("btnOn").addEventListener("click", function(){
     stopBlink(); setPump(70); setGate(85);
-    say("水位がしきい値をこえたら、水門が持ち上がって本流が流れ出したね。水車がぐんぐん回るよ！");
+    say("水門が開くと、青い本流が水車を回すね。電気の回路でも、ゲートの合図で道ができ、<b>電源からの電流</b>がモーターを動かします。");
   });
   el("btnOff").addEventListener("click", function(){
     stopBlink(); setGate(0); setPump(70);
@@ -1365,7 +1418,7 @@ pin0.write_analog(512)</pre>
   });
   el("btnNoPump").addEventListener("click", function(){
     stopBlink(); setGate(90); setPump(0);
-    say("水門は全開なのに、流れない！ タンクの水が低くて、<b>おす力</b>がないから。");
+    say("道は開いているのに、流れない！ <b>合図で道を開くこと</b>と、<b>電源からエネルギーを届けること</b>は別の役割です。MOSFETはONでも、電源が0なら電流は流れません。");
   });
 
   document.addEventListener("click", function(e){
@@ -1373,6 +1426,7 @@ pin0.write_analog(512)</pre>
     if(!b) return;
     var d = b.getAttribute("data-demo");
     if(d === "th"){ stopBlink(); setPump(70); setGate(32); say("しきい値のすぐ上。水門は「ちょっとだけ」開いた状態。流れはちょろちょろ。"); }
+    if(d === "off"){ el("btnOff").click(); }
     if(d === "nopump"){ el("btnNoPump").click(); }
     if(d === "blink"){ if(!blinkTimer) el("btnBlink").click(); }
     document.getElementById("lab").scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"start"});
@@ -1382,7 +1436,11 @@ pin0.write_analog(512)</pre>
 
   /* ============ アコーディオン ============ */
   Array.prototype.forEach.call(document.querySelectorAll(".point > .head"), function(h){
-    h.addEventListener("click", function(){ h.parentNode.classList.toggle("open"); });
+    h.setAttribute("aria-expanded", h.parentNode.classList.contains("open") ? "true" : "false");
+    h.addEventListener("click", function(){
+      var opened = h.parentNode.classList.toggle("open");
+      h.setAttribute("aria-expanded", opened ? "true" : "false");
+    });
   });
 
   /* ============ 水の粒（流れの見える化） ============ */
@@ -1458,11 +1516,11 @@ pin0.write_analog(512)</pre>
 
   /* ============ 実物の足（G・D・S）の説明 ============ */
   var PIN = {
-    G: { t:"G（ゲート）", d:"ここに電圧をかけると、中に通り道ができる。<b>操作する係</b>の足。",
-         m:"💧 水の模型では、オレンジの「操作そう」" },
-    D: { t:"D（ドレイン）", d:"本流の<b>入口</b>。電池のプラス側から、電流がここへ入ってくる。",
+    G: { t:"G（ゲート）", d:"<b>合図を受け取る足。</b>Sを基準にした電圧で、DとSの間の通りやすさを変えます。",
+         m:"💧 水の模型では、オレンジの「操作用タンク」" },
+    D: { t:"D（ドレイン）", d:"<b>この回路では、電流が入る足。</b>電源の＋からモーターを通ってきた電流が入ります。",
          m:"💧 水の模型では、高いところの「本流タンク」" },
-    S: { t:"S（ソース）", d:"本流の<b>出口</b>。電圧をはかるときの<b>基準</b>にもなる足。",
+    S: { t:"S（ソース）", d:"<b>この回路では、電流が出る足。</b>電源の−へつながり、Gの電圧を比べる基準になります。",
          m:"💧 水の模型では、低いところの「出口」" }
   };
   var pinSel = null;
@@ -1476,6 +1534,7 @@ pin0.write_analog(512)</pre>
     });
     Array.prototype.forEach.call(document.querySelectorAll(".pinrow button"), function(b){
       b.classList.toggle("sel", b.getAttribute("data-pin") === k);
+      b.setAttribute("aria-pressed", b.getAttribute("data-pin") === k ? "true" : "false");
     });
     el("pinDesc").innerHTML = "<b>" + PIN[k].t + "</b>　" + PIN[k].d +
                               '<span class="mz">' + PIN[k].m + "</span>";
@@ -1493,6 +1552,8 @@ pin0.write_analog(512)</pre>
   var PW_X0 = 96, PW_X1 = 404, PW_HI = 60, PW_LO = 160, PW_PERIOD = 88;
 
   function pwmWavePath(duty, phase){
+    if(duty <= 0) return "M" + PW_X0 + " " + PW_LO + " L" + PW_X1 + " " + PW_LO;
+    if(duty >= 1) return "M" + PW_X0 + " " + PW_HI + " L" + PW_X1 + " " + PW_HI;
     // 左から右へ、方形波を1周期ずつ描く（phase で少しずつ流す）
     var d = "", x = PW_X0 - (phase % PW_PERIOD), first = true;
     while(x < PW_X1){
@@ -1546,7 +1607,7 @@ pin0.write_analog(512)</pre>
   var xChannel = el("xChannel"), xChLabel = el("xChLabel"), xNoCh = el("xNoCh");
   var xPlus = el("xPlus"), xMinus = el("xMinus"), gate2Val = el("gate2Val");
 
-  var GTANK_BOTTOM = 148, GTANK_TOP = 44;      // 操作そうの水面が動く範囲
+  var GTANK_BOTTOM = 148, GTANK_TOP = 44;      // 操作用タンクの水面が動く範囲
   var TANK_BOTTOM = 258, TANK_TOP = 88;        // 本流タンク
   var GATE_CLOSED_Y = 192, GATE_LIFT = 41.6;   // 水門の板（閉じた位置と、持ち上がる量）
   var BALL_REST = 136, BALL_TOP = 69.2;        // 浮きが下がりきる／上がりきる位置
@@ -1569,10 +1630,10 @@ pin0.write_analog(512)</pre>
     var flow = cursn * FLOW_MAX;               // 流量(L/秒)
 
     // ---- 水：本流タンクの水位（ポンプが高いほど高い）----
-    var tankY = lerp(TANK_BOTTOM-18, TANK_TOP+8, cur.pump/100);
+    var tankY = lerp(TANK_BOTTOM, TANK_TOP+8, cur.pump/100);
     wTankWater.setAttribute("d", wavyTop(22, 246, tankY, TANK_BOTTOM, 1.6, timeS*2));
 
-    // ---- 水：操作そう（オレンジ）と浮き ----
+    // ---- 水：操作用タンク（オレンジ）と浮き ----
     var gY = lerp(GTANK_BOTTOM, GTANK_TOP, cur.gate/100);
     gWater.setAttribute("d", wavyTop(238, 292, gY, GTANK_BOTTOM, 1.2, timeS*2.6));
     var ballY = clamp(gY - 6, BALL_TOP, BALL_REST);
@@ -1690,12 +1751,13 @@ pin0.write_analog(512)</pre>
     el("eVgs").textContent = vgs.toFixed(1) + "V";
     el("eVdd").textContent = vdd.toFixed(1) + " V";
 
-    var onNow = cursn > 0.02;
+    var onNow = cursn > 0.00001;
+    var pathOpen = open > 0.001;
     var badge = el("wBadgeText"), ebadge = el("eBadgeText");
-    badge.textContent = onNow ? "ON" : "OFF";
-    ebadge.textContent = onNow ? "ON" : "OFF";
-    badge.setAttribute("fill", onNow ? "#1E7FCB" : "#8C959E");
-    ebadge.setAttribute("fill", onNow ? "#1E7FCB" : "#8C959E");
+    badge.textContent = pathOpen ? "開" : "閉";
+    ebadge.textContent = pathOpen ? "ON" : "OFF";
+    badge.setAttribute("fill", pathOpen ? "#1E7FCB" : "#8C959E");
+    ebadge.setAttribute("fill", pathOpen ? "#1E7FCB" : "#8C959E");
 
     var wS = el("wStatus"), eS = el("eStatus"), note = el("eNote");
     if(open <= 0.001){
@@ -1705,18 +1767,18 @@ pin0.write_analog(512)</pre>
       note.setAttribute("fill", "#8C959E");
     } else if(!onNow){
       wS.textContent = "開いたけど、おす力ゼロ";
-      eS.textContent = "電圧ゼロ";
+      eS.textContent = "ON・電源は0";
       note.textContent = "通り道はあるのに、おす電圧がないから電流は流れない";
       note.setAttribute("fill", "#E5942B");
     } else if(cursn < 0.3){
       wS.textContent = "ちょろちょろ流れる";
       eS.textContent = "少しだけ流れる";
-      note.textContent = "半分ひらいた状態。流せる量はまだ少ない";
+      note.textContent = open < 0.3 ? "開きはじめ。まだ電流は少ない" : "道は開いている。電源の電圧も流れに関係する";
       note.setAttribute("fill", "#E5942B");
     } else {
       wS.textContent = "ざぶざぶ流れる！";
       eS.textContent = "しっかり流れる！";
-      note.textContent = "通り道が広い ＝ 電流がたくさん流れる";
+      note.textContent = "道が開き、電源から電流が流れる";
       note.setAttribute("fill", "#1E7FCB");
     }
   }
@@ -1734,25 +1796,39 @@ pin0.write_analog(512)</pre>
   /* ============ クイズ ============ */
   var QUIZ = [
     {
-      q:"本流のタンクには水がいっぱい。でも操作そうの水位は低い。水は流れる？",
-      opts:["いきおいよく流れる","ほとんど流れない"],
+      q:"電源はつながっている。でも、ゲートの合図は0。モーターは回る？",
+      opts:["回る","回らない"],
       ans:1,
-      ok:"そのとおり！ しきい値をこえないと水門はひらかないので、ほとんど流れません。（V<sub>GS</sub> が小さいとOFF）",
-      ng:"じつは、ほとんど流れません。水門をひらく合図（しきい値）にとどいていないからです。"
+      ok:"そう！ このページのMOSFETは、合図が0ならOFF。電源があっても、電流の通り道が開いていません。",
+      ng:"答えは「回らない」。水があっても水門が閉じていれば流れないね。「OFFにもどす」で確かめよう。"
     },
     {
-      q:"水門は全開！ でも、本流をおす圧力の差がゼロ。水は流れる？",
-      opts:["流れる","流れない"],
-      ans:1,
-      ok:"せいかい！ 通り道をひらくことと、本流をおすことは、べつの役割でしたね。",
-      ng:"おしい！ 道があっても、おす力（電圧の差）がなければ流れません。「ポンプだけ止めてみる」で確かめよう。"
+      q:"ゲートには十分な合図がある。でも、モーター用の電源は0。どうなる？",
+      opts:["MOSFETはONでも、モーターは回らない","合図だけでモーターが回る"],
+      ans:0,
+      ok:"正解！ 道を開く合図と、動かすエネルギーは別。MOSFETがONでも、電源がなければ電流は流れません。",
+      ng:"答えは「MOSFETはONでも、モーターは回らない」。水門を開くだけでは水車を動かせないね。「電源だけ0にする」で試そう。"
     },
     {
-      q:"操作そうのオレンジの水は、本流にまざって流れていく？",
-      opts:["まざる","まざらない"],
+      q:"モーターを回す電流は、ゲートから膜を通り抜けて来る？",
+      opts:["ゲートから来る","電源からD・Sの道を通って流れる"],
       ans:1,
-      ok:"そのとおり！ 操作の水と本流は別。ゲートと本流のあいだにはうすい膜があって、電気は行き来しません。",
-      ng:"じつは、まざりません。操作する水（ゲート）と流れる水（本流）は、はじめから別々の世界です。"
+      ok:"そのとおり！ ゲートは合図を受け取る係。電源→モーター→D→S→電源という道に電流が流れます。",
+      ng:"答えは「電源からD・Sの道を通って流れる」。オレンジの水と青い本流が混ざらない模型を思い出そう。"
+    },
+    {
+      q:"しきい値を少し超えた。これで、必ず十分な電流を流せる？",
+      opts:["必ず流せる","まだ十分とは限らない"],
+      ans:1,
+      ok:"正解！ しきい値は開きはじめの目安。十分に通せるゲート電圧は、部品の説明書で確認します。",
+      ng:"答えは「まだ十分とは限らない」。水門のすきまが少しできた状態と、しっかり開いた状態は違います。"
+    },
+    {
+      q:"MOSFETの役目を、ひとことで説明するなら？",
+      opts:["モーターのエネルギーを作る部品","電圧の合図で、電流の道を開け閉めする部品"],
+      ans:1,
+      ok:"そのとおり！ 合図はゲート、電流の道はDとS、動かすエネルギーは電源。この役割分担を、自分の言葉でも説明してみよう。",
+      ng:"MOSFETは道を操作する部品。動かすエネルギーを作る部品ではありません。ゲート・D・Sの役割をもう一度見てみよう。"
     }
   ];
 
@@ -1766,7 +1842,7 @@ pin0.write_analog(512)</pre>
     d.innerHTML =
       '<p class="qt"><span class="qno">Q'+(i+1)+'</span>'+item.q+"</p>" +
       '<div class="opts">'+opts+"</div>" +
-      '<div class="fb" id="fb'+i+'"></div>';
+      '<div class="fb" role="status" id="fb'+i+'"></div>';
     box.appendChild(d);
   });
 
@@ -1788,7 +1864,16 @@ pin0.write_analog(512)</pre>
     var n = 0;
     Object.keys(answered).forEach(function(k){ if(answered[k] === QUIZ[k].ans) n++; });
     var done = Object.keys(answered).length;
-    el("score").textContent = n + " / 3 問せいかい" + (done === 3 ? (n === 3 ? "　🎉 かんぺき！" : "　もう一度パネルで試そう") : "");
+    el("score").textContent = n + " / " + QUIZ.length + " 問せいかい" + (done === QUIZ.length ? (n === QUIZ.length ? "　🎉 役割分担が分かったね！" : "　解説を読んで、もう一度試そう") : "");
+  });
+
+  el("quizReset").addEventListener("click", function(){
+    answered = {};
+    Array.prototype.forEach.call(box.querySelectorAll("button"), function(b){ b.classList.remove("correct","wrong"); });
+    Array.prototype.forEach.call(box.querySelectorAll(".fb"), function(fb){ fb.className = "fb"; fb.innerHTML = ""; });
+    el("score").textContent = "0 / " + QUIZ.length + " 問せいかい";
+    var first = box.querySelector("button");
+    if(first) first.focus();
   });
 
 })();
